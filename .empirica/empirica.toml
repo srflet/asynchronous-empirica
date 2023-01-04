@@ -1,0 +1,9 @@
+name = "polis-pilot"
+
+[tajriba.auth]
+srtoken = "cwMcxOJTxVWRBPlM"
+
+[[tajriba.auth.users]]
+name = "Admin"
+username = "admin"
+password = "YaTSIXNJ"

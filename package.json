@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "empirica-server": "file:server",
+    "react": "file:client"
+  }
+}
