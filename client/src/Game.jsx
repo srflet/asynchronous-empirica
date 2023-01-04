@@ -6,7 +6,6 @@ import {
 import React, { useState, useEffect } from "react"
 import { Timer } from "./components/Timer"
 import { StatementSubmit } from "./components/StatementSubmit"
-import { Button } from "./components/Button"
 
 export function Game() {
   const game = useGame()
