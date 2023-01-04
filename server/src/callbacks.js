@@ -42,6 +42,15 @@ Empirica.on("player", "join", function (ctx, { player }) {
 
   console.log(`condition is: ${condition}`)
 
+  console.log("\n\n---------batch info START----------\n")
+
+  console.log(
+    `\nnumber of batches: ${
+      Array.from(ctx.scopesByKind("batch").values()).length
+    }\n`
+  )
+  console.log("\n---------batch info END----------\n\n")
+
   const batch = Array.from(ctx.scopesByKind("batch").values())[0]
   if (batch.games.length === 0) {
     console.warn("no games found")
@@ -53,9 +62,14 @@ Empirica.on("player", "join", function (ctx, { player }) {
   const game = batch.games.filter(
     (_g) => _g.get("gameCondition") === condition
   )[0]
-  console.log(game)
+  // console.log(game)
   if (game) {
     console.log("Game here")
+    const oldIds = game.get("playersIds")
+    const newIds = [player.id, ...oldIds]
+    console.log(`old ids:${oldIds}`)
+    console.log(`new ids:${newIds}`)
+    game.set("playersIds", newIds)
     game.assignPlayer(player)
     player.set("join", null)
     return
