@@ -32,9 +32,30 @@ export function Game() {
       return
     }
     const searchParams = new URL(document.location).searchParams
-    const condition = searchParams.get("question")
+    let urlParams = {}
+    for (const [key, value] of searchParams) {
+      urlParams = {
+        ...urlParams,
+        [key]: key === "playerCount" ? parseInt(value) : value,
+      }
+    }
 
-    player.set("condition", condition)
+    console.log(urlParams)
+
+    const nullParams = ["participantKey", "MID"]
+
+    const filterParams = Object.fromEntries(
+      Object.entries(urlParams).filter(
+        ([key, value]) => !nullParams.includes(key)
+      )
+    )
+    console.log("these are the filter params", filterParams)
+    console.log(typeof filterParams)
+
+    player.set("filterParams", filterParams)
+
+    // player.set("filterKey", filterParams[0])
+    // player.set("filterValue", filterParams[1])
   }, [])
 
   useEffect(() => {
@@ -154,14 +175,14 @@ export function Game() {
     game.set("statements", newStatements)
   }
 
-  const treatments = game.get("treatment")
-  const topics = treatments.topics
+  const treatment = game.get("treatment")
+  const question = treatment.question
 
   return (
     <div className="h-full flex flex-col items-center m-auto space-x-4">
       <div className="flex items-center justify-center space-x-20">
         <div className="flex items-center justify-center space-y-2">
-          <h2>{topics}</h2>
+          <h2>{question}</h2>
           <Timer />
           {/* <div>Game ID: {game.id}</div> */}
         </div>
@@ -175,15 +196,15 @@ export function Game() {
       <div class="space-x-1">
         <button
           class="px-2 py-1 bg-teal-500 text-white"
-          onClick={() => console.log(seenStatements)}
+          onClick={() => console.log(game.get("playersIds"))}
         >
-          Seen statements
+          Players
         </button>
         <button
           class="px-2 py-1 bg-teal-500 text-white"
-          onClick={() => console.log(game.get("statements"))}
+          onClick={() => console.log(player.id)}
         >
-          All statements
+          This player
         </button>
       </div>
       {currentStatement && (
