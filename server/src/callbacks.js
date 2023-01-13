@@ -1,19 +1,37 @@
 import { ClassicListenersCollector } from "@empirica/core/admin/classic"
 export const Empirica = new ClassicListenersCollector()
-import { usePlayers } from "@empirica/core/player/classic/react"
+
 var cron = require("node-cron")
+
+// function shuffle(array) {
+
+// }
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+}
 
 // ------------------- Batch callbacks ---------------------------
 
-Empirica.on("batch", (_, { batch }) => {
-  if (!batch.get("initialized")) {
-    const { config } = batch.get("config")
-    console.log(config)
-    console.log(config.launchDate)
-    console.log(config.endDate)
-    console.log(config.dispatchWait)
-    console.log(config.treatmentFile)
-    batch.set("maxParticipants", config.nParticipants)
+// Empirica.on("batch", (ctx, { batch }) => {
+//   if (!batch.get("initialized")) {
+//     const { config } = batch.get("config")
+//     if (config?.nMaxParticipants) {
+//       ctx.globals.set("nMaxParticipants", config.nMaxParticipants)
+//     }
+
+//     console.log(config)
+//     console.log(config.launchDate)
+//     console.log(config.endDate)
+//     console.log(config.dispatchWait)
+//     console.log(config.treatmentFile)
+//     console.log(`Batch status: ${batch.status}`) //not work
+//     console.log(`Batch running: ${batch.running}`) //not work
+//     batch.set("maxParticipants", config.nParticipants)
+
     //   try {
     //     const treatmentFile = `${empiricaDir}/${config.treatmentFile}`;
     //     const treatments = getTreatments(treatmentFile, config.useTreatments);
@@ -71,34 +89,64 @@ Empirica.on("player", "join", function (ctx, { player }) {
   console.log(`Batch ID: ${allBatches.length}`)
   console.log(`Number of batches: ${allBatches.length}`)
   allBatches.forEach((_batch) => {
+    if (!_batch.isRunning) {
+      return
+    }
     console.log(`Batch ID: ${_batch.id}`)
     console.log(`Batch has ended: ${_batch.hasEnded}`)
-    console.log(`Batch Time: ${_batch.createdAt}`)
+    console.log(`Batch is running : ${_batch.isRunning}`)
     const allTreatments = _batch.get("config").config.treatments
     allTreatments.forEach((_treatment) => {
       console.log(_treatment.treatment.factors)
 
-      treatmentVector = [
-        ...treatmentVector,
-        {
-          batchId: _batch.id,
-          hasEnded: _batch.hasEnded,
-          treatment: _treatment.treatment.factors,
-          treatmentName: _treatment.treatment.name,
-        },
-      ]
+      const currentPlayerCount =
+        _batch.get(`${_treatment.treatment.name}PlayerCount`) || 0
+
+      console.log(
+        `Current player count: ${currentPlayerCount}\nMax player count ${_treatment.treatment.factors.playerCount}`
+      )
+
+      if (currentPlayerCount < _treatment.treatment.factors.playerCount) {
+        treatmentVector = [
+          ...treatmentVector,
+          {
+            batchId: _batch.id,
+            hasEnded: _batch.hasEnded,
+            treatment: _treatment.treatment.factors,
+            treatmentName: _treatment.treatment.name,
+          },
+        ]
+      }
+
+      if (!_batch.get(`${_treatment.treatment.name}PlayerCount`)) {
+        _batch.set(`${_treatment.treatment.name}PlayerCount`, 0)
+      }
+
+      console.log(
+        `Number of players in ${_treatment.treatment.name} is: ${_batch.get(
+          `${_treatment.treatment.name}PlayerCount`
+        )}`
+      )
     })
   })
 
   console.log(treatmentVector)
+
+  if (treatmentVector.length === 0) {
+    console.log("Error is no batches")
+    player.set("error", true)
+    player.set("errorCode", "noBatches")
+    return
+  }
+
+  //01GPK2Z2A02VC5JYCHSCYPMRBA
 
   const sortedTreatmentVector = treatmentVector.sort((a, b) =>
     a.batchId > b.batchId ? 1 : -1
   )
   console.log("\n---------sorted vector\n")
   console.log(sortedTreatmentVector)
-  console.log(`filter params:`)
-  console.log(filterParams)
+  // console.log(filterParams)
   Object.entries(filterParams).forEach((_param) => console.log(_param))
 
   let filteredBatches = sortedTreatmentVector
@@ -118,21 +166,50 @@ Empirica.on("player", "join", function (ctx, { player }) {
 
   console.log("\n---------available batches\n")
   console.log(filteredBatches)
-  const selectectedBatch = filteredBatches[0] // TODO choose a way of selecting from the filtered batches
-  const batchId = selectectedBatch.batchId
+
+  if (filteredBatches.length === 0) {
+    console.log("no games")
+    player.set("error", true)
+    player.set("errorCode", "gamesFull")
+    return
+  }
+
+  let finalTreatmentVector = []
+  filteredBatches.forEach((_batch) => {
+    const observedTreatments = finalTreatmentVector.map((entry) => {
+      return entry?.treatmentName
+    })
+    if (observedTreatments.includes(_batch.treatmentName)) {
+      return
+    }
+    finalTreatmentVector = [...finalTreatmentVector, _batch]
+  })
+  console.log("\n---------final vector\n")
+  console.log(finalTreatmentVector)
+
+  shuffleArray(finalTreatmentVector) //shuffles vector in place
+  const selectedBatch = finalTreatmentVector[0] // TODO choose a way of selecting from the filtered batches
+
+  console.log("\n---------selected batch is:\n")
+
+  console.log(selectedBatch)
+
+  const batchId = selectedBatch.batchId
   console.log(batchId)
-  console.log(selectectedBatch)
-  console.log("\n---------treatments vector END----------\n")
+  console.log(`Error is: ${player.get("errorCode")}`)
 
   const batch = Array.from(ctx.scopesByKind("batch").values()).find(
     (_batch) => _batch.id === batchId
   )
 
+  const currentPlayerCount = batch.get(
+    `${selectedBatch.treatmentName}PlayerCount`
+  )
+  batch.set(`${selectedBatch.treatmentName}PlayerCount`, currentPlayerCount + 1)
+
   Array.from(ctx.scopesByKind("batch").values()).map((_batch) => {
     console.log(`Batch id: ${_batch.id}`, _batch.id === batchId)
   })
-
-  console.log(batch)
 
   if (batch.games.length === 0) {
     console.warn("no games found")
@@ -141,7 +218,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
 
   const availableGames = batch.games
     .filter((_game) => {
-      return _game.players.length < selectectedBatch.treatment.playerCount
+      return _game.players.length < selectedBatch.treatment.playerCount
     })
     .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
   console.log(`Number of potential games: \n ${availableGames.length}`)
@@ -181,7 +258,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
     playersIds: [player.id],
     gameCondition: filterParams.question,
     statements: [],
-    treatment: selectectedBatch.treatment,
+    treatment: selectedBatch.treatment,
     timestamp: new Date().getTime(),
   })
 })

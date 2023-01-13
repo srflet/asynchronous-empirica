@@ -6,6 +6,7 @@ import {
 import React, { useState, useEffect } from "react"
 import { Timer } from "./components/Timer"
 import { StatementSubmit } from "./components/StatementSubmit"
+import { p } from "@antfu/utils"
 
 export function Game() {
   const game = useGame()
@@ -121,6 +122,8 @@ export function Game() {
             </button>
           </div>
         </form>
+
+        {player.get("error") && <p>Error code: {player.get("errorCode")}</p>}
       </div>
     )
   }

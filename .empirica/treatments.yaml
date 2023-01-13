@@ -48,3 +48,23 @@ treatments:
       factors:
         playerCount: 20
         question: This is a question about sports?
+    - name: Politics 20 player
+      factors:
+        playerCount: 20
+        question: This is a question about politics?
+    - name: Economics 20 player
+      factors:
+        playerCount: 20
+        question: This is a question about economics?
+    - name: Sports 2 player
+      factors:
+        playerCount: 2
+        question: This is a question about sports?
+    - name: Economics 2 player
+      factors:
+        playerCount: 2
+        question: This is a question about economics?
+    - name: Politics 2 player
+      factors:
+        playerCount: 2
+        question: This is a question about politics?
