@@ -32,39 +32,39 @@ function shuffleArray(array) {
 //     console.log(`Batch running: ${batch.running}`) //not work
 //     batch.set("maxParticipants", config.nParticipants)
 
-    //   try {
-    //     const treatmentFile = `${empiricaDir}/${config.treatmentFile}`;
-    //     const treatments = getTreatments(treatmentFile, config.useTreatments);
-    //     dispatchers.set(batch.id, makeDispatcher({ treatments }));
+//   try {
+//     const treatmentFile = `${empiricaDir}/${config.treatmentFile}`;
+//     const treatments = getTreatments(treatmentFile, config.useTreatments);
+//     dispatchers.set(batch.id, makeDispatcher({ treatments }));
 
-    //     batch.set("treatments", treatments);
-    //     batch.set("launchDate", config.launchDate);
-    //     batch.set("endDate", config.endDate);
-    //     batch.set("dispatchWait", config.dispatchWait);
-    //     batch.set("initialized", true);
-    //     console.log(`Initialized Batch ${batch.id}`);
-    //   } catch (err) {
-    //     console.log(`Failed to create batch with config:`);
-    //     console.log(JSON.stringify(config));
-    //     console.log(err);
-    //     batch.set("status", "failed");
-    //   }
-    // } else {
-    //   // put the following outside the idempotency check
-    //   // so that if the server restarts and the batch already exists,
-    //   // we can repopulate the dispatchers map
-    //   const treatments = batch.get("treatments");
-    //   if (
-    //     !dispatchers.has(batch.id) &&
-    //     batch.get("status") !== "failed" &&
-    //     batch.get("status") !== "terminated" &&
-    //     treatments?.filter((t) => t.factors).length > 0
-    //   ) {
-    //     console.log("rebuilding dispatcher");
-    //     dispatchers.set(batch.id, makeDispatcher({ treatments }));
-    //   }
-  }
-})
+//     batch.set("treatments", treatments);
+//     batch.set("launchDate", config.launchDate);
+//     batch.set("endDate", config.endDate);
+//     batch.set("dispatchWait", config.dispatchWait);
+//     batch.set("initialized", true);
+//     console.log(`Initialized Batch ${batch.id}`);
+//   } catch (err) {
+//     console.log(`Failed to create batch with config:`);
+//     console.log(JSON.stringify(config));
+//     console.log(err);
+//     batch.set("status", "failed");
+//   }
+// } else {
+//   // put the following outside the idempotency check
+//   // so that if the server restarts and the batch already exists,
+//   // we can repopulate the dispatchers map
+//   const treatments = batch.get("treatments");
+//   if (
+//     !dispatchers.has(batch.id) &&
+//     batch.get("status") !== "failed" &&
+//     batch.get("status") !== "terminated" &&
+//     treatments?.filter((t) => t.factors).length > 0
+//   ) {
+//     console.log("rebuilding dispatcher");
+//     dispatchers.set(batch.id, makeDispatcher({ treatments }));
+//   }
+//   }
+// })
 
 Empirica.on("player", function (ctx, { player }) {
   console.log("****Player was called here*******")
@@ -188,13 +188,13 @@ Empirica.on("player", "join", function (ctx, { player }) {
   console.log(finalTreatmentVector)
 
   shuffleArray(finalTreatmentVector) //shuffles vector in place
-  const selectedBatch = finalTreatmentVector[0] // TODO choose a way of selecting from the filtered batches
+  const selectedTreatment = finalTreatmentVector[0] // TODO choose a way of selecting from the filtered batches
 
   console.log("\n---------selected batch is:\n")
 
-  console.log(selectedBatch)
+  console.log(selectedTreatment)
 
-  const batchId = selectedBatch.batchId
+  const batchId = selectedTreatment.batchId
   console.log(batchId)
   console.log(`Error is: ${player.get("errorCode")}`)
 
@@ -203,9 +203,12 @@ Empirica.on("player", "join", function (ctx, { player }) {
   )
 
   const currentPlayerCount = batch.get(
-    `${selectedBatch.treatmentName}PlayerCount`
+    `${selectedTreatment.treatmentName}PlayerCount`
   )
-  batch.set(`${selectedBatch.treatmentName}PlayerCount`, currentPlayerCount + 1)
+  batch.set(
+    `${selectedTreatment.treatmentName}PlayerCount`,
+    currentPlayerCount + 1
+  )
 
   Array.from(ctx.scopesByKind("batch").values()).map((_batch) => {
     console.log(`Batch id: ${_batch.id}`, _batch.id === batchId)
@@ -215,13 +218,27 @@ Empirica.on("player", "join", function (ctx, { player }) {
     console.warn("no games found")
     // return
   }
+  if (batch.games.length > 0) {
+    batch.games.forEach((_game) => {
+      console.log(_game.get("treatment"))
+    })
+  }
 
   const availableGames = batch.games
-    .filter((_game) => {
-      return _game.players.length < selectedBatch.treatment.playerCount
+    .filter(function (_game) {
+      const curentPlayerCount = _game.players.length || 0
+      return (
+        _game.get("treatment").question ===
+          selectedTreatment.treatment.question &&
+        curentPlayerCount < selectedTreatment.treatment.playerCount
+      )
     })
     .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
   console.log(`Number of potential games: \n ${availableGames.length}`)
+
+  availableGames.forEach((_game) => {
+    console.log(_game.get("treatment"))
+  })
 
   const game =
     availableGames.length === 1
@@ -258,7 +275,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
     playersIds: [player.id],
     gameCondition: filterParams.question,
     statements: [],
-    treatment: selectedBatch.treatment,
+    treatment: selectedTreatment.treatment,
     timestamp: new Date().getTime(),
   })
 })
@@ -295,7 +312,7 @@ Empirica.onGameStart(({ game }) => {
   // })
   console.log("game started")
   const round = game.addRound({ name: "Conversation" })
-  round.addStage({ name: "Conversation", duration: 604800 })
+  round.addStage({ name: "Conversation", duration: 120 })
 })
 
 Empirica.onRoundStart(({ round }) => {})

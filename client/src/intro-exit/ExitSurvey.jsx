@@ -1,20 +1,21 @@
-import { usePlayer } from "@empirica/core/player/classic/react";
-import React, { useState } from "react";
-import { Alert } from "../components/Alert";
-import { Button } from "../components/Button";
+import { usePlayer } from "@empirica/core/player/classic/react"
+import React, { useState } from "react"
+import { Alert } from "../components/Alert"
+import { Button } from "../components/Button"
+import { EstimatePage } from "../components/EstimatePage"
 
 export function ExitSurvey({ next }) {
-  const labelClassName = "block text-sm font-medium text-gray-700 my-2";
+  const labelClassName = "block text-sm font-medium text-gray-700 my-2"
   const inputClassName =
-    "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm";
-  const player = usePlayer();
+    "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm"
+  const player = usePlayer()
 
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
-  const [strength, setStrength] = useState("");
-  const [fair, setFair] = useState("");
-  const [feedback, setFeedback] = useState("");
-  const [education, setEducation] = useState("");
+  const [age, setAge] = useState("")
+  const [gender, setGender] = useState("")
+  const [strength, setStrength] = useState("")
+  const [fair, setFair] = useState("")
+  const [feedback, setFeedback] = useState("")
+  const [education, setEducation] = useState("")
 
   function handleSubmit() {
     player.set("exitSurvey", {
@@ -24,12 +25,20 @@ export function ExitSurvey({ next }) {
       fair,
       feedback,
       education,
-    });
-    next();
+    })
+    next()
   }
 
   function handleEducationChange(e) {
-    setEducation(e.target.value);
+    setEducation(e.target.value)
+  }
+
+  if (!player.get("postEstimate")) {
+    return (
+      <>
+        <EstimatePage />
+      </>
+    )
   }
 
   return (
@@ -44,7 +53,20 @@ export function ExitSurvey({ next }) {
           <strong>1 base reward</strong> for completing the HIT.
         </p>
       </Alert>
-
+      <div class="space-x-1">
+        <button
+          class="px-2 py-1 bg-teal-500 text-white"
+          onClick={() => console.log(player.get("preEstimate"))}
+        >
+          Pre Estimate
+        </button>
+        <button
+          class="px-2 py-1 bg-teal-500 text-white"
+          onClick={() => console.log(player.get("postEstimate"))}
+        >
+          Post Estimate
+        </button>
+      </div>
       <form
         className="mt-12 space-y-8 divide-y divide-gray-200"
         onSubmit={handleSubmit}
@@ -184,7 +206,7 @@ export function ExitSurvey({ next }) {
         </div>
       </form>
     </div>
-  );
+  )
 }
 
 export function Radio({ selected, name, value, label, onChange }) {
@@ -200,5 +222,5 @@ export function Radio({ selected, name, value, label, onChange }) {
       />
       {label}
     </label>
-  );
+  )
 }

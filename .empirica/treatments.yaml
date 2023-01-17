@@ -1,10 +1,4 @@
 factors:
-    - name: question
-      desc: question that is to be selected for the game/batch
-      values:
-        - value: This is a question about politics?
-        - value: This is a question about economics?
-        - value: This is a question about sports?
     - name: playerCount
       desc: playerCount determines the number of Players are in a Game.
       values:
@@ -16,9 +10,15 @@ factors:
         - value: 13
         - value: 10
         - value: 20
-    - name: numgames
+    - name: question
+      desc: question that is to be selected for the game/batch
       values:
-        - value: 10
+        - value: politics
+        - value: economics
+        - value: sports
+    - name: numgam
+      values:
+        - value: 5
 treatments:
     - name: Two Players
       desc: Two-player Game
@@ -68,3 +68,23 @@ treatments:
       factors:
         playerCount: 2
         question: This is a question about politics?
+    - name: Economics 10 player
+      factors:
+        playerCount: 10
+        question: This is a question about economics?
+    - name: Sports 10 player
+      factors:
+        playerCount: 10
+        question: This is a question about sports?
+    - name: Politics 10 player
+      factors:
+        playerCount: 10
+        question: This is a question about politics?
+    - name: Econ 5
+      factors:
+        playerCount: 5
+        question: economics
+    - name: Sports 5
+      factors:
+        playerCount: 5
+        question: sports

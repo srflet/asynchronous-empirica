@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react"
 import { Timer } from "./components/Timer"
 import { StatementSubmit } from "./components/StatementSubmit"
 import { p } from "@antfu/utils"
+import { EstimatePage } from "./components/EstimatePage"
 
 export function Game() {
   const game = useGame()
@@ -19,6 +20,7 @@ export function Game() {
 
   const statements = game ? game.get("statements") : []
   const seenStatements = player ? player.get("seenStatements") : []
+  const [preEstimate, setPreEstimate] = useState("")
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -180,6 +182,54 @@ export function Game() {
 
   const treatment = game.get("treatment")
   const question = treatment.question
+  const hasPreEstimate = player.get("preEstimate")
+  const treatmentListItems = Object.entries(treatment).map(([key, value]) => {
+    return (
+      <li>
+        {key}: {value}
+      </li>
+    )
+  })
+
+  if (!hasPreEstimate) {
+    return (
+      <>
+        <EstimatePage />
+      </>
+      // <div className="h-full flex flex-col items-center m-auto space-x-4">
+      //   <div className="flex items-center justify-center space-x-20"></div>
+      //   <h2>{question}</h2>
+      //   <h1>
+      //     Please answer in the box below and click <em>submit</em> to continue.
+      //   </h1>
+      //   <form
+      //     onSubmit={(e) => {
+      //       e.preventDefault()
+      //       player.set("preEstimate", preEstimate)
+      //     }}
+      //     class="w-96 bg-teal-50 prose p-8 rounded-lg shadow"
+      //   >
+      //     <p>
+      //       <label htmlFor="topic" class="block">
+      //         Estimate:
+      //       </label>
+      //       <input
+      //         autoFocus
+      //         type="text"
+      //         onChange={(e) => setPreEstimate(e.target.value)}
+      //         value={preEstimate}
+      //       />
+      //     </p>
+
+      //     <div class="space-x-1">
+      //       <button class="px-2 py-1 bg-teal-500 text-white" type="submit">
+      //         Submit
+      //       </button>
+      //     </div>
+      //   </form>
+      // </div>
+    )
+  }
 
   return (
     <div className="h-full flex flex-col items-center m-auto space-x-4">
@@ -199,13 +249,13 @@ export function Game() {
       <div class="space-x-1">
         <button
           class="px-2 py-1 bg-teal-500 text-white"
-          onClick={() => console.log(game.get("playersIds"))}
+          onClick={() => console.log(game.get("treatment"))}
         >
           Players
         </button>
         <button
           class="px-2 py-1 bg-teal-500 text-white"
-          onClick={() => console.log(player.id)}
+          onClick={() => console.log(player.get("preEstimate"))}
         >
           This player
         </button>
@@ -258,6 +308,14 @@ export function Game() {
         )} */}
 
       <StatementSubmit />
+      <div>
+        <ul>
+          <lh>
+            <strong>Treatment Info:</strong>
+          </lh>
+          {treatmentListItems}
+        </ul>
+      </div>
     </div>
   )
 }

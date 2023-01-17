@@ -33,6 +33,7 @@ export default function App() {
             unmanagedAssignment
             disableNoGames
             disableConsent
+            exitSteps={exitSteps}
           >
             <Game />
           </EmpiricaContext>
