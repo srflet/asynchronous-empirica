@@ -26,7 +26,7 @@ export function Game() {
     event.preventDefault()
     if (nickname) {
       player.set("nickname", nickname)
-      player.set("join", true)
+      // player.set("join", true) for OLD version where they click join button
     }
   }
 
@@ -59,6 +59,16 @@ export function Game() {
 
     // player.set("filterKey", filterParams[0])
     // player.set("filterValue", filterParams[1])
+  }, [])
+
+  useEffect(() => {
+    console.log("firing join use effect: line 65")
+    if (!player) {
+      return
+    }
+    console.log("firing join use effect: line 69")
+
+    player.set("join", true)
   }, [])
 
   useEffect(() => {
@@ -102,7 +112,7 @@ export function Game() {
   if (!game) {
     return (
       <div className="h-full flex flex-col items-center justify-center">
-        <h3>Please enter your first name, or a nickname.</h3>
+        {/* <h3>Please enter your first name, or a nickname.</h3>
         <p>This is the name that other participants will see.</p>
         <form className="space-y-3" onSubmit={handleSubmit}>
           {" "}
@@ -123,7 +133,7 @@ export function Game() {
               Join
             </button>
           </div>
-        </form>
+        </form> */}
 
         {player.get("error") && <p>Error code: {player.get("errorCode")}</p>}
       </div>
@@ -183,6 +193,8 @@ export function Game() {
   const treatment = game.get("treatment")
   const question = treatment.question
   const hasPreEstimate = player.get("preEstimate")
+  const hasNickname = player.get("nickname")
+
   const treatmentListItems = Object.entries(treatment).map(([key, value]) => {
     return (
       <li>
@@ -190,6 +202,35 @@ export function Game() {
       </li>
     )
   })
+
+  if (!hasNickname) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center">
+        <h3>Please enter your first name, or a nickname.</h3>
+        <p>This is the name that other participants will see.</p>
+        <form className="space-y-3" onSubmit={handleSubmit}>
+          {" "}
+          <div className="ml-2 mt-2 space-y-1">
+            <input
+              className="mb-5 appearance-none block px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm"
+              type="textarea"
+              id="inputNickname"
+              data-test="inputNickname"
+              onChange={(e) => setNickname(e.target.value)}
+            />
+          </div>
+          <div className="flex space-x-1 justify-center items-center ">
+            <button
+              className="px-2 py-1 bg-teal-500 text-white"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    )
+  }
 
   if (!hasPreEstimate) {
     return (
