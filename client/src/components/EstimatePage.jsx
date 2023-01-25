@@ -5,14 +5,20 @@ import {
   usePlayers,
   useStage,
 } from "@empirica/core/player/classic/react"
+import { Loading } from "@empirica/core/player/react"
 export function EstimatePage() {
   const game = useGame()
   const player = usePlayer()
   const [estimate, setEstimate] = useState("")
 
-  if (!game | !player) {
-    return <p>loading...</p>
+  if (!game | !player | (!game.hasEnded && player.get("preEstimate"))) {
+    return (
+      <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <Loading />
+      </div>
+    )
   }
+
   const treatment = game.get("treatment")
   const question = treatment.question
   const estimateType = game.hasEnded ? "postEstimate" : "preEstimate"
@@ -46,15 +52,17 @@ export function EstimatePage() {
           <button class="px-2 py-1 bg-teal-500 text-white" type="submit">
             Submit
           </button>
-          <button
-            class="px-2 py-1 bg-teal-500 text-white"
-            onClick={(e) => console.log(game.hasEnded)}
-          >
-            {" "}
-            Has Game Ended?{" "}
-          </button>
         </div>
       </form>
+      <div class="space-x-1">
+        <button
+          class="px-2 py-1 bg-teal-500 text-white"
+          onClick={(e) => console.log(game.hasEnded)}
+        >
+          {" "}
+          Has Game Ended?{" "}
+        </button>
+      </div>
     </div>
   )
 }

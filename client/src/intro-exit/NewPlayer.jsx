@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useCallback } from "react"
+import { Loading } from "@empirica/core/player/react"
 
 export function NewPlayer({ onPlayerID, connecting }) {
   const [playerID, setPlayerID] = useState("")
@@ -39,14 +40,15 @@ export function NewPlayer({ onPlayerID, connecting }) {
 
   return (
     <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      {/* <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Enter your Player Identifier
         </h2>
-      </div>
+      </div> */}
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <Loading />
+      {/* <div className="loader"></div> */}
+      {/* <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form
             className="space-y-6"
             action="#"
@@ -92,8 +94,7 @@ export function NewPlayer({ onPlayerID, connecting }) {
               </div>
             </fieldset>
           </form>
-        </div>
-      </div>
+        </div> */}
     </div>
   )
 }

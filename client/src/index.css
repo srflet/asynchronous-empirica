@@ -5,7 +5,7 @@
     -webkit-appearance: none;
     margin: 0;
   }
-  
+
   /* Firefox */
   input.number-arrows-none[type="number"] {
     -moz-appearance: textfield;
@@ -19,6 +19,25 @@ TODO fix @import "@empirica/core/assets/slider.css";
 Meanwhile, embedding slider css below.
 
 */
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #04111a; /* Blue */
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 .slider-thumb,
 .slider-thumb-zero {
