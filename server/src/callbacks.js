@@ -233,7 +233,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
         curentPlayerCount < selectedTreatment.treatment.playerCount
       )
     })
-    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+    .sort((a, b) => (a.timeStamp > b.timeStamp ? 1 : -1))
   console.log(`Number of potential games: \n ${availableGames.length}`)
 
   availableGames.forEach((_game) => {
@@ -254,11 +254,11 @@ Empirica.on("player", "join", function (ctx, { player }) {
 
     availableGames.forEach((_game) => {
       console.log(
-        `game 1 timestamp: ${_game.get("timestamp")}`,
-        game.get("timestamp")
+        `game 1 timeStamp: ${_game.get("timeStamp")}`,
+        game.get("timeStamp")
       )
     })
-    console.log(game.get("timestamp"))
+    console.log(game.get("timeStamp"))
 
     const oldIds = game.get("playersIds")
     const newIds = oldIds.includes(player.id) ? oldIds : [player.id, ...oldIds]
@@ -276,7 +276,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
     gameCondition: filterParams.question,
     statements: [],
     treatment: selectedTreatment.treatment,
-    timestamp: new Date().getTime(),
+    timeStamp: new Date().getTime(),
   })
 })
 
@@ -312,7 +312,7 @@ Empirica.onGameStart(({ game }) => {
   // })
   console.log("game started")
   const round = game.addRound({ name: "Conversation" })
-  round.addStage({ name: "Conversation", duration: 120 })
+  round.addStage({ name: "Conversation", duration: 604800 })
 })
 
 Empirica.onRoundStart(({ round }) => {})

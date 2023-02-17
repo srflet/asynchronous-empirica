@@ -48,13 +48,16 @@ export function StatementSubmit() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="px-4 pt-2 pb-4 border-t">
-        <textarea
-          className="chat-textarea w-full m-0 px-0 resize-none xl:text-lg text-md text-gray-500 bg-transparent placeholder-gray-300 border-0 border-b-2 border-white focus:ring-0 focus:outline-none focus:border-b-2 focus:border-gray-500 leading-snug tabular-nums"
+    <div className="row-start-11 col-start-3 row-span-5 col-span-3 border-solid rounded border shadow flex flex-col p-6 space-y-2">
+    <h1 className="m-b-2">Statement Submit: </h1>
+
+    <div className="flex flex-col space-y-5 p-6">
+        <input
+        type="text"
+          className="w-full m-auto px-0 resize-none xl:text-lg text-md text-gray-500 bg-transparent placeholder-gray-300 border rounded leading-snug p-4"
           id="statement-input"
           name="statement"
-          placeholder="Type your statement here..."
+          placeholder="     ...type your statement here"
           value={statement}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
@@ -64,14 +67,18 @@ export function StatementSubmit() {
           onChange={(e) => setStatement(e.target.value)}
           autoComplete="off"
         />
+        <div className="flex flex-wrap justify-end">
         <button
           type="submit"
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-empirica-600 hover:bg-empirica-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-empirica-500"
+          className="w-1/3 flex text-center justify-center py-2 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-empirica-500"
           onClick={handleSubmit}
         >
           Submit
         </button>
+        </div>
+
       </div>
-    </form>
+    </div>
+
   )
 }

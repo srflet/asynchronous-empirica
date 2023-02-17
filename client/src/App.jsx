@@ -4,6 +4,8 @@ import { EmpiricaMenu, EmpiricaParticipant } from "@empirica/core/player/react"
 import React from "react"
 import "virtual:windi.css"
 import { Game } from "./Game"
+import { GameSimple } from "./GameSimple"
+import { GameScreen } from "./GameScreen"
 import { ExitSurvey } from "./intro-exit/ExitSurvey"
 import { Introduction } from "./intro-exit/Introduction"
 import { NewPlayer } from "./intro-exit/NewPlayer"
@@ -35,7 +37,7 @@ export default function App() {
             disableConsent
             exitSteps={exitSteps}
           >
-            <Game />
+            <GameSimple />
           </EmpiricaContext>
         </div>
       </div>

@@ -43,6 +43,7 @@ export function EstimatePage() {
           <input
             autoFocus
             type="text"
+            id="inputEstimate"
             onChange={(e) => setEstimate(e.target.value)}
             value={estimate}
           />
