@@ -9,11 +9,14 @@ import { StatementSubmit } from "./components/StatementSubmit"
 import { p } from "@antfu/utils"
 import { EstimatePage } from "./components/EstimatePage"
 import { GameScreen } from "./GameScreen"
+import { GameScreenMobile } from "./GameScreenMobile"
 
 export function GameSimple() {
   const game = useGame()
   const players = usePlayers()
   const player = usePlayer()
+
+  const [isMobile, setIsMobile] = useState(false);
 
   const [nickname, setNickname] = useState("")
   const [currentStatement, setCurrentStatement] = useState({})
@@ -30,6 +33,18 @@ export function GameSimple() {
       // player.set("join", true) for OLD version where they click join button
     }
   }
+
+  useEffect(() => {
+    window.screen.width <= 1000 ? setIsMobile(true) : setIsMobile(false);
+  }, [window.screen.width]);
+
+  function detectWindowSize() {
+      window.innerWidth <= 1000 ? setIsMobile(true) : setIsMobile(false);        
+  }
+  
+  window.onresize = detectWindowSize;
+
+  console.log("🚀 ~ file: GameSimple.jsx:48 ~ GameSimple ~ isMobile:", isMobile)
 
   useEffect(() => {
     if (!player) {
@@ -242,7 +257,12 @@ export function GameSimple() {
   // }
 
   return (
-    <GameScreen />
+    <>
+    { isMobile 
+      ? <GameScreenMobile />
+      : <GameScreen />
+     }
+     </>
   )
 }
 

@@ -41,14 +41,14 @@ export function MessageSubmit() {
 
     return (
         <div className="flex flex-wrap justify-evenly items-center">
-            <div className="h-1 w-3/4 p-2 border border-transparent rounded text-sm font-medium">
+            <div className="p-2 border border-transparent rounded text-sm font-medium">
                 <input 
                     type="text" 
                     value={newMessage.text || ""}
                     onChange={handleChange}/>
             </div>
 
-        <div className="h-1 p-t-2 w-1/4">
+        <div className="w-1/4">
             <button
             type="submit"
             className="flex text-center p-2 border border-transparent rounded text-sm font-medium text-white bg-gray-500 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-empirica-500"

@@ -20,7 +20,7 @@ export function ChatRoom() {
     console.log(sortedMessages)
 
     return (
-        <div className="h-4/5 flex flex-col-reverse space-y-2 p-2 border rounded shadow bg-gray-100 overflow-x-hidden snap-end">
+        <div className="h-4/5 min-h-100px flex flex-col-reverse space-y-2 p-2 border rounded shadow bg-gray-100 overflow-x-hidden snap-end">
             {sortedMessages.map((_message, index) => 
                 <Message key={index} text={_message.text} sender={_message.sender} timeStamp={_message.timeStamp} />
             )}
