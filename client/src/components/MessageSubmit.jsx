@@ -41,11 +41,12 @@ export function MessageSubmit() {
 
     return (
         <div className="flex flex-wrap justify-evenly items-center">
-            <div className="p-2 border border-transparent rounded text-sm font-medium">
-                <input 
-                    type="text" 
+            <div className="p-2 h-auto border border-transparent rounded text-sm font-medium">
+                <textarea 
+                className="p-4"
                     value={newMessage.text || ""}
-                    onChange={handleChange}/>
+                    onChange={handleChange}>
+                        </textarea>
             </div>
 
         <div className="w-1/4">

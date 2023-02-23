@@ -15,7 +15,7 @@ export function Message({text, sender, timeStamp}) {
 
     return (
         <div className={`p-6 m-2 min-h-max w-3/5 flex flex-wrap border rounded ${isSender ? "self-end bg-green-100 text-right" : "self-start bg-blue-100 text-left"}`}>
-            <span>{text}</span>
+            <span className="break-all">{text}</span>
         </div>
     )
 }

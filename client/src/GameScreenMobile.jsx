@@ -7,43 +7,36 @@ import { StatementBox } from "./components/StatementBox"
 import { StatementSubmit } from "./components/StatementSubmit"
 import { StatementList } from "./components/StatementList"
 import { Chat } from "./components/Chat"
-import {MobileBanner} from "./components/MobileBanner"
-
+import { MobileBanner } from "./components/MobileBanner"
 
 export function GameScreenMobile() {
-
   const [view, setView] = useState("estimate") // can be estimate | vote | statements
 
-  const isChat = true
+  const isChat = false
   return (
     <div className="h-9/10 min-w-350px max-w-400px flex flex-col m-4 align-center space-y-4">
-      <MobileBanner view={view} setView={setView}/>
+      <MobileBanner view={view} setView={setView} />
       <EndDateBox />
       <QuestionBox />
-      {view==="estimate" && 
-      (
+      {view === "estimate" && (
         <>
-      <CurrentEstimate />
-      {isChat ? <Chat /> : <PlayerList /> }
-      </>
+          <CurrentEstimate />
+          {isChat ? <Chat /> : <PlayerList />}
+        </>
       )}
 
-      {view==="vote" && 
-      (
+      {view === "vote" && (
         <>
-      <StatementBox />
-      <StatementSubmit />
-      </>
-      )
-      }
-
-    {view==="statements" && 
-      (
-        <>
-      <StatementList />
-      </>
+          <StatementBox />
+          <StatementSubmit />
+        </>
       )}
 
+      {view === "statements" && (
+        <>
+          <StatementList />
+        </>
+      )}
     </div>
   )
 }

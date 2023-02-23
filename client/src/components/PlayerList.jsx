@@ -24,7 +24,7 @@ export function PlayerList() {
     console.log(otherPlayersCards)
 
     return (
-        <div className="row-start-4 col-start-1 space-y-2 row-span-12 col-span-2 border-solid rounded border shadow">
+        <div className="row-start-4 col-start-1 space-y-2 row-span-12 col-span-2 border border-solid rounded shadow">
             <h1 className="p-t-6">Player List: </h1>
             {otherPlayers.map((_player, index) => 
                     <PlayerCard key={index} name={_player.get("nickname")} estimate={_player.get("currentEstimate")} />

@@ -51,13 +51,14 @@ export function StatementSubmit() {
     <div className="row-start-11 col-start-3 row-span-5 col-span-3 border-solid rounded border shadow flex flex-col p-6 space-y-2">
     <h1 className="m-b-2">Statement Submit: </h1>
 
-    <div className="flex flex-col space-y-5 p-6">
-        <input
+    <div className="flex flex-col space-y-5">
+    <div className="w-full h-auto min-h-max p-2 border border-transparent xl:text-lg rounded text-sm font-medium rounded leading-snug">
+        <textarea 
         type="text"
-          className="w-full m-auto px-0 resize-none xl:text-lg text-md text-gray-500 bg-transparent placeholder-gray-300 border rounded leading-snug p-4"
+          className=" p-4 w-full " //px-0 resize-none xl:text-lg text-md text-gray-500 bg-transparent placeholder-gray-300 border rounded leading-snug p-4"
           id="statement-input"
           name="statement"
-          placeholder="     ...type your statement here"
+          placeholder="...type your statement here"
           value={statement}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
@@ -66,7 +67,9 @@ export function StatementSubmit() {
           }}
           onChange={(e) => setStatement(e.target.value)}
           autoComplete="off"
-        />
+        >
+          </textarea>
+        </div>
         <div className="flex flex-wrap justify-end">
         <button
           type="submit"

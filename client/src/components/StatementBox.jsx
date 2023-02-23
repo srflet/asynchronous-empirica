@@ -105,9 +105,9 @@ export function StatementBox() {
         <div className="row-start-6 col-start-3 row-span-5 col-span-3 border-solid rounded border-solid shadow flex flex-col p-6 space-y-2">
           <h1 className="m-b-2">Statement: </h1>
             {currentStatement && (
-              <div>
-              <div className="m-4 p-6 border-solid rounded border">
-                    <p className="text-center">{currentStatement.text}</p>
+              <div className="h-4/5">
+              <div className="m-4 h-auto max-h-2/3 border-solid rounded border">
+                    <p className="max-h-80px overflow-scroll text-center">{currentStatement.text}</p>
               </div>
                 <div className="flex felx-wrap justify-around">
                         <button className="bg-green-500 py-2 px-4 hover:bg-green-400 rounded border border-transparent rounded shadow-sm text-sm font-medium text-white" value="agree" onClick={handleVote}>
