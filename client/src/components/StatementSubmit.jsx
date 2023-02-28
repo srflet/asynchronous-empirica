@@ -31,9 +31,9 @@ export function StatementSubmit() {
         text: statement,
         timeStamp: new Date().getTime(),
         author: player.get("nickname"),
-        yes: 0,
-        no: 0,
-        pass: 0,
+        agree: 0,
+        disagree: 0,
+        uncertain: 0,
       },
     ]
 
@@ -49,39 +49,36 @@ export function StatementSubmit() {
 
   return (
     <div className="row-start-11 col-start-3 row-span-5 col-span-3 border-solid rounded border shadow flex flex-col p-6 space-y-2">
-    <h1 className="m-b-2">Statement Submit: </h1>
+      <h1 className="m-b-2">Statement Submit: </h1>
 
-    <div className="flex flex-col space-y-5">
-    <div className="w-full h-auto min-h-max p-2 border border-transparent xl:text-lg rounded text-sm font-medium rounded leading-snug">
-        <textarea 
-        type="text"
-          className=" p-4 w-full " //px-0 resize-none xl:text-lg text-md text-gray-500 bg-transparent placeholder-gray-300 border rounded leading-snug p-4"
-          id="statement-input"
-          name="statement"
-          placeholder="...type your statement here"
-          value={statement}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              handleSubmit(e)
-            }
-          }}
-          onChange={(e) => setStatement(e.target.value)}
-          autoComplete="off"
-        >
-          </textarea>
+      <div className="flex flex-col space-y-5">
+        <div className="w-full h-auto min-h-max p-2 border border-transparent xl:text-lg rounded text-sm font-medium rounded leading-snug">
+          <textarea
+            type="text"
+            className=" p-4 w-full " //px-0 resize-none xl:text-lg text-md text-gray-500 bg-transparent placeholder-gray-300 border rounded leading-snug p-4"
+            id="statement-input"
+            name="statement"
+            placeholder="...type your statement here"
+            value={statement}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSubmit(e)
+              }
+            }}
+            onChange={(e) => setStatement(e.target.value)}
+            autoComplete="off"
+          ></textarea>
         </div>
         <div className="flex flex-wrap justify-end">
-        <button
-          type="submit"
-          className="w-1/3 flex text-center justify-center py-2 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-empirica-500"
-          onClick={handleSubmit}
-        >
-          Submit
-        </button>
+          <button
+            type="submit"
+            className="w-1/3 flex text-center justify-center py-2 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-empirica-500"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
         </div>
-
       </div>
     </div>
-
   )
 }

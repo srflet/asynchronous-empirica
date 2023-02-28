@@ -1,25 +1,31 @@
-import React from 'react'
+import React from "react"
 import { useGame } from "@empirica/core/player/classic/react"
-import { StatementCard } from './StatementCard'
+import { StatementCard } from "./StatementCard"
 
-// TODO map statemtns to StatementCard ==> need statement (text) and yes, no pass count
-
+// TODO map statemtns to StatementCard ==> need statement (text) and yes, no uncertain count
 
 export function StatementList() {
-    const game = useGame()
+  const game = useGame()
 
-    if (!game) {
-        return "Loading..."
-    }
+  if (!game) {
+    return "Loading..."
+  }
 
-    const statements = game.get("statements")
+  const statements = game.get("statements")
 
-    return (
-        <div className="row-start-4 col-start-6 row-span-12 col-span-2 border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
-            <h1 className="m-b-2">Statements: </h1>
-            {statements.map((_s, index) => 
-                    <StatementCard key={index} statement={_s.text} agree={_s.agree} pass={_s.pass} disagree={_s.disagree}/>
-                )
-            }
-             </div> )
+  return (
+    <div className="row-start-4 col-start-6 row-span-12 col-span-2 border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
+      <h1 className="m-b-2">Statements: </h1>
+      {statements.map((_s, index) => (
+        <StatementCard
+          key={index}
+          statement={_s.text}
+          agree={_s.agree}
+          uncertain={_s.uncertain}
+          disagree={_s.disagree}
+          statementId={_s.id}
+        />
+      ))}
+    </div>
+  )
 }

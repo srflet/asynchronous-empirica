@@ -16,7 +16,7 @@ export function GameSimple() {
   const players = usePlayers()
   const player = usePlayer()
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false)
 
   const [nickname, setNickname] = useState("")
   const [currentStatement, setCurrentStatement] = useState({})
@@ -35,14 +35,14 @@ export function GameSimple() {
   }
 
   useEffect(() => {
-    window.screen.width <= 1000 ? setIsMobile(true) : setIsMobile(false);
-  }, [window.screen.width]);
+    window.screen.width <= 1000 ? setIsMobile(true) : setIsMobile(false)
+  }, [window.screen.width])
 
   function detectWindowSize() {
-      window.innerWidth <= 1000 ? setIsMobile(true) : setIsMobile(false);        
+    window.innerWidth <= 1000 ? setIsMobile(true) : setIsMobile(false)
   }
-  
-  window.onresize = detectWindowSize;
+
+  window.onresize = detectWindowSize
 
   console.log("🚀 ~ file: GameSimple.jsx:48 ~ GameSimple ~ isMobile:", isMobile)
 
@@ -256,14 +256,7 @@ export function GameSimple() {
   //   )
   // }
 
-  return (
-    <>
-    { isMobile 
-      ? <GameScreenMobile />
-      : <GameScreen />
-     }
-     </>
-  )
+  return <>{isMobile ? <GameScreenMobile /> : <GameScreen />}</>
 }
 
 const statementStyle = {

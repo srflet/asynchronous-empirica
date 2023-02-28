@@ -144,7 +144,7 @@ export function Game() {
     event.preventDefault()
     const vote = event.target.value
 
-    const { no, pass, yes, ...thisStatement } = currentStatement
+    const { no, uncertain, yes, ...thisStatement } = currentStatement
 
     const prevSeenStatements = player.get("seenStatements")
     const newStatements = [
@@ -315,8 +315,12 @@ export function Game() {
                 <button className="m-1" value="no" onClick={handleVote}>
                   No
                 </button>
-                <button className="m-1" value="pass" onClick={handleVote}>
-                  Pass
+                <button
+                  className="m-1"
+                  value="uncertainrtain"
+                  onClick={handleVote}
+                >
+                  Uncertain
                 </button>
               </div>
             </li>
@@ -341,7 +345,7 @@ export function Game() {
                   <div className="flex m-8 items-center justify-center">
                     <button className="m-1" value="yes" onClick={handleVote}>Yes</button>
                     <button className="m-1" value="no" onClick={handleVote}>No</button>
-                    <button className="m-1" value="pass" onClick={handleVote}>Pass</button>
+                    <button className="m-1" value="uncertain" onClick={handleVote}>Uncertain</button>
                   </div>
                 </li>
               ))}
