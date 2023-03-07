@@ -1,12 +1,14 @@
 import React from "react"
 
-export function InfoIcon({ showInstructions, setShowInstructions }) {
+export function InfoIcon({ showInstructions, setShowInstructions, isMobile }) {
   function handleClick() {
     setShowInstructions(!showInstructions)
   }
   return (
     <svg
-      className="h-1/2 w-1/2 hover:border hover:border-solid hover:rounded hover:shadow"
+      className={`${
+        isMobile ? "h-25px w-25px self-center" : "h-1/2 w-1/2"
+      } hover:border hover:border-solid hover:rounded hover:shadow`}
       clip-rule="evenodd"
       fill-rule="evenodd"
       stroke-linejoin="round"

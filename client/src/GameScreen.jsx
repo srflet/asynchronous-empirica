@@ -33,7 +33,9 @@ export function GameScreen({ showInstructions, setShowInstructions }) {
         <StatementList />
         <StatementSubmit />
       </div>
-      {showInstructions && <InstructionsBox />}
+      {showInstructions && (
+        <InstructionsBox setShowInstructions={setShowInstructions} />
+      )}
     </div>
   )
 }

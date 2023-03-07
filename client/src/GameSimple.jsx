@@ -261,7 +261,10 @@ export function GameSimple() {
   return (
     <>
       {isMobile ? (
-        <GameScreenMobile />
+        <GameScreenMobile
+          showInstructions={showInstructions}
+          setShowInstructions={setShowInstructions}
+        />
       ) : (
         <GameScreen
           showInstructions={showInstructions}
