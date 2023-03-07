@@ -50,7 +50,7 @@ export function CurrentEstimate() {
   }
 
   return (
-    <div className="row-start-1 col-start-1 row-span-3 col-span-2 border border-solid rounded shadow">
+    <div className="row-start-1 col-start-1 row-span-3 col-span-3 border border-solid rounded shadow">
       <div className="h-full p-4 space-y-1 flex flex-col">
         <h1>{updating ? "Update your estimate:" : "Current estimate:"}</h1>
         {!updating ? (

@@ -100,7 +100,7 @@ export function StatementBox() {
   }
 
   return (
-    <div className="row-start-6 col-start-3 row-span-5 col-span-3 border border-solid rounded shadow flex flex-col p-6 space-y-2">
+    <div className="row-start-6 col-start-4 row-span-5 col-span-5 border border-solid rounded shadow flex flex-col p-6 space-y-2">
       <h1 className="m-b-2">Statement: </h1>
       {currentStatement && (
         <div className="h-4/5">

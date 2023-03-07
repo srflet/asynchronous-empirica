@@ -256,7 +256,20 @@ export function GameSimple() {
   //   )
   // }
 
-  return <>{isMobile ? <GameScreenMobile /> : <GameScreen />}</>
+  const [showInstructions, setShowInstructions] = useState(false)
+
+  return (
+    <>
+      {isMobile ? (
+        <GameScreenMobile />
+      ) : (
+        <GameScreen
+          showInstructions={showInstructions}
+          setShowInstructions={setShowInstructions}
+        />
+      )}
+    </>
+  )
 }
 
 const statementStyle = {
