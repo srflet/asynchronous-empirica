@@ -7,7 +7,9 @@ export function InfoIcon({ showInstructions, setShowInstructions, isMobile }) {
   return (
     <svg
       className={`${
-        isMobile ? "h-25px w-25px self-center" : "h-1/2 w-1/2"
+        isMobile
+          ? "h-25px w-25px self-center fill-white hover:bg-gray-700"
+          : "h-1/2 w-1/2 fill-black"
       } hover:border hover:border-solid hover:rounded hover:shadow`}
       clip-rule="evenodd"
       fill-rule="evenodd"
@@ -17,10 +19,7 @@ export function InfoIcon({ showInstructions, setShowInstructions, isMobile }) {
       xmlns="http://www.w3.org/2000/svg"
       onClick={handleClick}
     >
-      <path
-        d="m22 16.75c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75zm0-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75zm0-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75z"
-        fill-rule="nonzero"
-      />
+      <path d="M13.25 7c0 .69-.56 1.25-1.25 1.25s-1.25-.56-1.25-1.25.56-1.25 1.25-1.25 1.25.56 1.25 1.25zm10.75 5c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-2 0c0-5.514-4.486-10-10-10s-10 4.486-10 10 4.486 10 10 10 10-4.486 10-10zm-13-2v2h2v6h2v-8h-4z" />
     </svg>
   )
 }

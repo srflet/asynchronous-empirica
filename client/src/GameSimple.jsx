@@ -211,14 +211,6 @@ export function GameSimple() {
   const hasPreEstimate = player.get("preEstimate")
   const hasNickname = player.get("nickname")
 
-  const treatmentListItems = Object.entries(treatment).map(([key, value]) => {
-    return (
-      <li>
-        {key}: {value}
-      </li>
-    )
-  })
-
   if (!hasNickname) {
     return (
       <div className="h-full flex flex-col items-center justify-center">

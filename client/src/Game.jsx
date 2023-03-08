@@ -22,14 +22,6 @@ export function Game() {
   const seenStatements = player ? player.get("seenStatements") : []
   const [preEstimate, setPreEstimate] = useState("")
 
-  function handleSubmit(event) {
-    event.preventDefault()
-    if (nickname) {
-      player.set("nickname", nickname)
-      // player.set("join", true) for OLD version where they click join button
-    }
-  }
-
   useEffect(() => {
     if (!player) {
       return
@@ -108,6 +100,14 @@ export function Game() {
       return
     }
   }, [seenStatements, statements])
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    if (nickname) {
+      player.set("nickname", nickname)
+      // player.set("join", true) for OLD version where they click join button
+    }
+  }
 
   if (!game) {
     return (

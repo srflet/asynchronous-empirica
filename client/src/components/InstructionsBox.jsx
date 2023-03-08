@@ -28,7 +28,7 @@ export function InstructionsBox({ isMobile, setShowInstructions }) {
           really long
           instructionsinstructionsinstructionsinstructionsinstructionsinstructionsinstructions
         </p>
-        <p className="break-all">Your id: {player.id}</p>
+        <p className="break-all">Notifications will be sent to: {player.id}</p>
       </div>
     </div>
   )
