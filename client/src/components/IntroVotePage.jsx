@@ -22,14 +22,9 @@ export function EstimatePage() {
   }
 
   return (
-    <div className="h-full w-full place-center">
-      <div className="h-9/10 grid gap-4 grid-cols-[400px] grid-rows-3 m-4 place-center">
-        <TextBox
-          className="row-start-1 row-span-1 col-start-1 col-span-1"
-          type="Question"
-        />
-        <EstimateSubmit className="row-start-2 row-span-1 col-start-1 col-span-1" />
-      </div>
+    <div className="h-9/10 max-h-12/13 min-h-screen-md grid gap-4 grid-cols-11 grid-rows-15 m-4">
+      <TextBox type="Instructions" />
+      <EstimateSubmit />
     </div>
   )
 }

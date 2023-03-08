@@ -12,7 +12,7 @@ export function CurrentEstimate() {
     if (!player) {
       return
     }
-    setCurrentEstimate(player.get("currentEstimate"))
+    setCurrentEstimate(player.get("preEstimate"))
   }, [])
 
   // useEffect(() => {
@@ -50,7 +50,7 @@ export function CurrentEstimate() {
   }
 
   return (
-    <div className="row-start-1 col-start-1 row-span-3 col-span-3 border border-solid rounded shadow">
+    <div className="border border-solid rounded shadow">
       <div className="h-full p-4 space-y-1 flex flex-col">
         <h1>{updating ? "Update your estimate:" : "Current estimate:"}</h1>
         {!updating ? (
@@ -70,6 +70,7 @@ export function CurrentEstimate() {
             type="number"
             id="inputEstimate"
             value={estimate}
+            placeholder={player.get("currentEstimate")}
             onChange={(e) => setEstimate(e.target.value)}
           />
         )}

@@ -147,7 +147,8 @@ Empirica.on("player", "join", function (ctx, { player }) {
   console.log("\n---------sorted vector\n")
   console.log(sortedTreatmentVector)
   // console.log(filterParams)
-  Object.entries(filterParams).forEach((_param) => console.log(_param))
+
+  Object.entries(filterParams)?.forEach((_param) => console.log(_param))
 
   let filteredBatches = sortedTreatmentVector
   if (filterParams) {

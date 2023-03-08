@@ -43,11 +43,11 @@ export function EndDateBox() {
   }
 
   return (
-    <div className="row-start-1 col-start-9 row-span-2 col-span-2">
-      <div className="h-full p-4 space-y-2 border border-solid rounded shadow flex flex-col justify-evenly">
+    <>
+      <div className="h-full w-full p-4 space-y-2 border border-solid rounded shadow flex flex-col justify-evenly">
         <h1>End Date: </h1>
         <p className="self-center">{endDate.toLocaleDateString()}</p>
       </div>
-    </div>
+    </>
   )
 }

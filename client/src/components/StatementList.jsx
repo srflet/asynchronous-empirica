@@ -14,7 +14,7 @@ export function StatementList() {
   const statements = game.get("statements")
 
   return (
-    <div className="row-start-3 col-start-9 row-span-13 col-span-3 border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
+    <div className="h-full border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
       <h1 className="m-b-2">Statements: </h1>
       {statements.map((_s, index) => (
         <StatementCard

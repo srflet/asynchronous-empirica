@@ -48,10 +48,10 @@ export function StatementSubmit() {
   }
 
   return (
-    <div className="row-start-11 col-start-4 row-span-5 col-span-5 border-solid rounded border shadow flex flex-col p-6 space-y-2">
+    <div className="h-full border-solid rounded border shadow flex flex-col p-6 space-y-2">
       <h1 className="m-b-2">Statement Submit: </h1>
 
-      <div className="flex flex-col space-y-5">
+      <div className="flex flex-col space-y-2">
         <div className="w-full h-auto min-h-max p-2 border border-transparent xl:text-lg rounded text-sm font-medium rounded leading-snug">
           <textarea
             type="text"

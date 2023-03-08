@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { CurrentEstimate } from "./components/CurrentEstimate"
-import { QuestionBox } from "./components/QuestionBox"
+import { TextBox } from "./components/TextBox"
 import { EndDateBox } from "./components/EndDateBox"
 import { PlayerList } from "./components/PlayerList"
 import { StatementBox } from "./components/StatementBox"
@@ -29,7 +29,7 @@ export function GameScreenMobile({ showInstructions, setShowInstructions }) {
           isMobile={true}
         />
         <EndDateBox />
-        <QuestionBox />
+        <TextBox type="Question" />
         {view === "estimate" && (
           <>
             <CurrentEstimate />
