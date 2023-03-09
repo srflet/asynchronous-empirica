@@ -10,8 +10,7 @@ import { Chat } from "./components/Chat"
 import { InfoIcon } from "./components/SvgIcon"
 import { InstructionsBox } from "./components/InstructionsBox"
 
-export function GameScreen({ showInstructions, setShowInstructions }) {
-  const isChat = true
+export function GameScreen({ showInstructions, setShowInstructions, isChat }) {
   return (
     <div className="relative h-9/10 w-full justify-center">
       <div

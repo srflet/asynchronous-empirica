@@ -6,10 +6,11 @@ import {
 import React, { useState, useEffect } from "react"
 import { Timer } from "./components/Timer"
 import { StatementSubmit } from "./components/StatementSubmit"
-import { p } from "@antfu/utils"
 import { EstimatePage } from "./components/EstimatePage"
+import { IntroVotePage } from "./components/IntroVotePage"
 import { GameScreen } from "./GameScreen"
 import { GameScreenMobile } from "./GameScreenMobile"
+import { Loading } from "@empirica/core/player/react"
 
 export function GameSimple() {
   const game = useGame()
@@ -31,6 +32,7 @@ export function GameSimple() {
     event.preventDefault()
     if (nickname) {
       player.set("nickname", nickname)
+      player.set("gameStage", "introEstimate")
       // player.set("join", true) for OLD version where they click join button
     }
   }
@@ -45,8 +47,6 @@ export function GameSimple() {
 
   window.onresize = detectWindowSize
 
-  console.log("🚀 ~ file: GameSimple.jsx:48 ~ GameSimple ~ isMobile:", isMobile)
-
   useEffect(() => {
     if (!player) {
       return
@@ -60,8 +60,6 @@ export function GameSimple() {
       }
     }
 
-    console.log(urlParams)
-
     const nullParams = ["participantKey", "MID"]
 
     const filterParams = Object.fromEntries(
@@ -69,8 +67,6 @@ export function GameSimple() {
         ([key, value]) => !nullParams.includes(key)
       )
     )
-    console.log("these are the filter params", filterParams)
-    console.log(typeof filterParams)
 
     player.set("filterParams", filterParams)
 
@@ -79,11 +75,9 @@ export function GameSimple() {
   }, [])
 
   useEffect(() => {
-    console.log("firing join use effect: line 65")
     if (!player) {
       return
     }
-    console.log("firing join use effect: line 69")
 
     player.set("join", true)
   }, [])
@@ -92,7 +86,6 @@ export function GameSimple() {
     if (!player || !game) {
       return
     }
-    console.log("firing effect")
     const seenStatementIds = player
       .get("seenStatements")
       .map((_statement) => _statement.id)
@@ -104,8 +97,6 @@ export function GameSimple() {
       setCurrentStatement({})
       return
     }
-
-    console.log(`voted: ${voted}`)
 
     if (!currentStatement) {
       setCurrentStatement(
@@ -169,8 +160,7 @@ export function GameSimple() {
     )
   }
 
-  if (!hasPreEstimate) {
-    player.set("gameStage", "intro")
+  if (player.get("gameStage") === "introEstimate") {
     return (
       <>
         <EstimatePage />
@@ -178,20 +168,38 @@ export function GameSimple() {
     )
   }
 
-  player.set("gameStage", "game")
+  if (player.get("gameStage") === "introVote") {
+    return (
+      <>
+        <IntroVotePage />
+      </>
+    )
+  }
+
+  const isChat = treatment.communication === "chat"
+  if (player.get("gameStage") === "game") {
+    return (
+      <>
+        {isMobile ? (
+          <GameScreenMobile
+            showInstructions={showInstructions}
+            setShowInstructions={setShowInstructions}
+            isChat={isChat}
+          />
+        ) : (
+          <GameScreen
+            showInstructions={showInstructions}
+            setShowInstructions={setShowInstructions}
+            isChat={isChat}
+          />
+        )}
+      </>
+    )
+  }
+
   return (
-    <>
-      {isMobile ? (
-        <GameScreenMobile
-          showInstructions={showInstructions}
-          setShowInstructions={setShowInstructions}
-        />
-      ) : (
-        <GameScreen
-          showInstructions={showInstructions}
-          setShowInstructions={setShowInstructions}
-        />
-      )}
-    </>
+    <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <Loading />
+    </div>
   )
 }

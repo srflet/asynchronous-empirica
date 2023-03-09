@@ -10,10 +10,13 @@ import { Chat } from "./components/Chat"
 import { MobileBanner } from "./components/MobileBanner"
 import { InstructionsBox } from "./components/InstructionsBox"
 
-export function GameScreenMobile({ showInstructions, setShowInstructions }) {
+export function GameScreenMobile({
+  showInstructions,
+  setShowInstructions,
+  isChat,
+}) {
   const [view, setView] = useState("estimate") // can be estimate | vote | statements
 
-  const isChat = false
   return (
     <div className="relative h-full w-full justify-center">
       <div

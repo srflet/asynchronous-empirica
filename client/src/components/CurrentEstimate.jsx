@@ -8,27 +8,13 @@ export function CurrentEstimate() {
   const [estimate, setEstimate] = useState(undefined)
 
   useEffect(() => {
-    // console.log("----FITRING ON MOUNT EFFECT-----")
     if (!player) {
       return
     }
     setCurrentEstimate(player.get("preEstimate"))
   }, [])
 
-  // useEffect(() => {
-  //   console.log("----EFFECT-----")
-  //   if (!player) {
-  //     return
-  //   }
-  //   player.set("currentEstimate", estimate)
-  //   setCurrentEstimate(estimate)
-  // }, [estimate])
-
   function handleClick(event) {
-    // console.log(`state | currentEstimate ${currentEstimate}`)
-    // console.log(`empirica | currentEstimate ${player.get("currentEstimate")}`)
-    // console.log(`state | updating ${updating}`)
-    // console.log(`state | estimate ${estimate}`)
     if (updating) {
       if (!estimate) {
         alert("Please enter an estimate")
@@ -71,6 +57,11 @@ export function CurrentEstimate() {
             id="inputEstimate"
             value={estimate}
             placeholder={player.get("currentEstimate")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleClick(e)
+              }
+            }}
             onChange={(e) => setEstimate(e.target.value)}
           />
         )}

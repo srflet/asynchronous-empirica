@@ -19,7 +19,6 @@ export function MessageSubmit() {
   }
 
   function handleSubmit() {
-    console.log(game.get("messages"))
     if (!newMessage) {
       return
     }

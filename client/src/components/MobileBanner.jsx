@@ -11,8 +11,6 @@ export function MobileBanner({
   function handleClick(event) {
     event.preventDefault()
     const target = event.target.value
-    console.log("🚀 ~ file: MobileBanner.jsx:8 ~ handleClick ~ target:", target)
-
     setView(target)
   }
   return (

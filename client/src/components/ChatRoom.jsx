@@ -12,9 +12,6 @@ export function ChatRoom() {
 
   const sortedMessages = messages.sort((a, b) => a.timeStamp < b.timeStamp)
 
-  console.log(messages)
-  console.log(sortedMessages)
-
   return (
     <div className="h-4/5 min-h-100px flex flex-col-reverse space-y-2 p-2 border rounded shadow bg-gray-100 overflow-auto snap-end">
       {sortedMessages.map((_message, index) => (

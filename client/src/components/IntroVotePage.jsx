@@ -7,13 +7,13 @@ import {
 } from "@empirica/core/player/classic/react"
 import { Loading } from "@empirica/core/player/react"
 import { TextBox } from "./TextBox"
-import { EstimateSubmit } from "./EsimateSubmit"
+import { StatementBox } from "./StatementBox"
 
-export function EstimatePage() {
+export function IntroVotePage() {
   const game = useGame()
   const player = usePlayer()
 
-  if (!game | !player | (!game.hasEnded && player.get("preEstimate"))) {
+  if (!game | !player) {
     return (
       <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <Loading />
@@ -22,9 +22,16 @@ export function EstimatePage() {
   }
 
   return (
-    <div className="h-9/10 max-h-12/13 min-h-screen-md grid gap-4 grid-cols-11 grid-rows-15 m-4">
-      <TextBox type="Instructions" />
-      <EstimateSubmit />
+    <div className="h-9/10 p-y-20 flex flex-col space-y-10 justify-center4">
+      <div className="flex min-h-max w-400px self-center">
+        <TextBox type="Question" />
+      </div>
+      <div className="min-h-max w-400px self-center">
+        <TextBox type="Instructions" />
+      </div>
+      <div className="h-300px w-400px self-center">
+        <StatementBox />
+      </div>
     </div>
   )
 }

@@ -9,8 +9,6 @@ export function Message({ text, sender, timeStamp }) {
 
   const isSender = sender === player.id
 
-  console.log(text, sender, timeStamp)
-
   return (
     <div
       className={`p-6 m-2 min-h-max w-3/5 flex flex-wrap border rounded ${

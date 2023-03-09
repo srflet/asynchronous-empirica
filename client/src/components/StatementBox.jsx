@@ -10,20 +10,74 @@ export function StatementBox() {
   const seenStatements = player ? player.get("seenStatements") : []
 
   useEffect(() => {
-    if (!player || !game) {
-      1
+    console.log("firing use effect to make intro statements")
+    if (!player | !game) {
       return
     }
-    console.log("firing effect")
+
+    if (player.get("introStatements") !== undefined) {
+      return
+    }
+
+    console.log(statements)
+    console.log("game and player exist")
+
+    console.log(`game stage is ${player.get("gameStage")}`)
+
+    if (!player.get("gameStage") === "introVote") {
+      return
+    }
+    console.log("in intro")
+
+    const nStatements = game.get("treatment").numberPreStatements
+    console.log(
+      "🚀 ~ file: StatementBox.jsx:28 ~ useEffect ~ nStatements:",
+      nStatements
+    )
+
+    let prePopStatements = JSON.parse(JSON.stringify(statements))
+    console.log(
+      "🚀 ~ file: StatementBox.jsx:32 ~ useEffect ~ prePopStatements:",
+      prePopStatements
+    )
+
+    shuffleArray(prePopStatements)
+    let statementsForIntro = prePopStatements.slice(0, nStatements)
+    console.log(
+      "🚀 ~ file: StatementBox.jsx:26 ~ useEffect ~ statementsForIntro:",
+      statementsForIntro
+    )
+
+    player.set("introStatements", statementsForIntro)
+  }, [])
+
+  useEffect(() => {
+    if (!player || !game) {
+      return
+    }
+    console.log("firing effect statements to vote")
     const seenStatementIds = player
       .get("seenStatements")
       .map((_statement) => _statement.id)
 
-    const statementsToVote = statements.filter(
+    let useStatements =
+      player.get("gameStage") === "introVote"
+        ? player.get("introStatements")
+        : statements.slice()
+
+    console.log(`player stage is: ${player.get("gameStage")}`)
+    console.log(
+      "🚀 ~ file: StatementBox.jsx:61 ~ useEffect ~ useStatements:",
+      useStatements
+    )
+
+    let statementsToVote = useStatements.filter(
       (_statement) => !seenStatementIds.includes(_statement.id)
     )
+
     if (!statementsToVote) {
       setCurrentStatement({})
+
       return
     }
 
@@ -48,6 +102,13 @@ export function StatementBox() {
     }
   }, [seenStatements, statements])
 
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[array[i], array[j]] = [array[j], array[i]]
+    }
+  }
+
   function handleVote(event) {
     event.preventDefault()
     const vote = event.target.value
@@ -67,6 +128,14 @@ export function StatementBox() {
 
     player.set("seenStatements", newStatements)
     setVoted(true)
+
+    if (
+      player.get("gameStage") === "introVote" &&
+      newStatements.length === game.get("treatment").numberPreStatements
+    ) {
+      console.log("!!!!!!!!!!!!!!!!!Voted on all intro statements!!!!!!!!!!!!")
+      player.set("gameStage", "game")
+    }
   }
 
   function updateGameStatements(thisStatement, vote) {

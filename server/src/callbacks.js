@@ -272,10 +272,31 @@ Empirica.on("player", "join", function (ctx, { player }) {
 
   console.log("No game here")
 
+  console.log(`********************** STATMENTS FROM TREATMENT********\n`)
+  console.log(selectedTreatment.treatment.prePopulatedStatements)
+  console.log(`***********************************\n`)
+
+  const prePopulatedStatements =
+    selectedTreatment.treatment.prePopulatedStatements.map(
+      (_statement, index) => {
+        return {
+          id: `prePopulate_${index}`,
+          text: _statement,
+          timeStamp: null,
+          author: "prePopulated",
+          agree: 0,
+          disagree: 0,
+          uncertain: 0,
+        }
+      }
+    )
+
+  console.log(prePopulatedStatements)
+
   batch.addGame({
     playersIds: [player.id],
     gameCondition: filterParams.question,
-    statements: [],
+    statements: prePopulatedStatements,
     treatment: selectedTreatment.treatment,
     timeStamp: new Date().getTime(),
   })

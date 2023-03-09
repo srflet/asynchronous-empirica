@@ -19,15 +19,27 @@ factors:
     - name: numgam
       values:
         - value: 5
-    - name: prePopulatedStatements
-      desc: field contating an stringified array of strings, each string is a statement for the intro steps.
+    - name: communication
+      desc: method of communication. chat vs numerical
       values:
-        - value: '''["Stament One", "Statement Two", "Statement Three", "Statement Four", "Statement Five", "Statement Six", "Statement Seven"]''"'
-    - name: nPreStatements
+        - value: chat
+        - value: numerical
+    - name: numberPreStatements
       desc: number of statements to be randomly selected from prepopulated statements array and displayed to during the intro steps
       values:
         - value: 3
         - value: 5
+    - name: prePopulatedStatements
+      desc: field contating an stringified array of strings, each string is a statement for the intro steps.
+      values:
+        - value:
+            - Stament One
+            - Statement Two
+            - Statement Three
+            - Statement Four
+            - Statement Five
+            - Statement Six
+            - Statement Seven
 treatments:
     - name: Two Players
       desc: Two-player Game
@@ -95,7 +107,15 @@ treatments:
         question: sports
     - name: Econ 5
       factors:
-        nPreStatements: 3
+        communication: chat
+        numberPreStatements: 3
         playerCount: 5
-        prePopulatedStatements: '''["Stament One", "Statement Two", "Statement Three", "Statement Four", "Statement Five", "Statement Six", "Statement Seven"]''"'
+        prePopulatedStatements:
+            - Stament One
+            - Statement Two
+            - Statement Three
+            - Statement Four
+            - Statement Five
+            - Statement Six
+            - Statement Seven
         question: economics

@@ -14,11 +14,14 @@ export function EstimateSubmit() {
   }
 
   const estimateType =
-    player.get("gameStage") === "intro" ? "preEstimate" : "postEstimate"
+    player.get("gameStage") === "introEstimate" ? "preEstimate" : "postEstimate"
 
   function handleSubmit(event) {
     event.preventDefault()
+
+    player.set("currentEstimate", estimate)
     player.set(`${estimateType}`, estimate)
+    player.set("gameStage", "introVote")
   }
 
   return (
@@ -34,6 +37,11 @@ export function EstimateSubmit() {
             type="number"
             id="inputEstimate"
             value={estimate}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSubmit(e)
+              }
+            }}
             onChange={(e) => setEstimate(e.target.value)}
           />
         </div>

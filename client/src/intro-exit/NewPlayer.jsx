@@ -5,18 +5,10 @@ import { Loading } from "@empirica/core/player/react"
 export function NewPlayer({ onPlayerID, connecting }) {
   const [playerID, setPlayerID] = useState("")
 
-  console.log(
-    `rendering the new player form: ${new Date()}${new Date().getMilliseconds()}ms`
-  )
-
   useEffect(() => {
-    console.log(
-      `Intro Player: attempting to fire effect ${new Date()}${new Date().getMilliseconds()}ms`
-    )
     if (!onPlayerID || connecting) {
       return
     }
-    console.log("Intro: Player ID")
     const searchParams = new URL(document.location).searchParams
     const id = searchParams.get("MID")
 
@@ -24,7 +16,6 @@ export function NewPlayer({ onPlayerID, connecting }) {
       return
     }
 
-    console.log(`creating player: ${id}`)
     onPlayerID(id)
   }, [onPlayerID, connecting])
 
