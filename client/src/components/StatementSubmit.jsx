@@ -30,7 +30,7 @@ export function StatementSubmit() {
           Math.random().toString(36).substring(2, 15),
         text: statement,
         timeStamp: new Date().getTime(),
-        author: player.get("nickname"),
+        author: player.id,
         agree: 0,
         disagree: 0,
         uncertain: 0,
@@ -45,6 +45,20 @@ export function StatementSubmit() {
     //   timeStamp: new Date(TimeSync.serverTime(null, 1000)),
     //   author: player.get("nickname")
     // })
+
+    if (player.get("gameStage") === "introStatementSubmit") {
+      const myStatements = newStatements.filter(
+        (_statement) => _statement.author === player.id
+      )
+      console.log(
+        "🚀 ~ file: StatementSubmit.jsx:51 ~ handleSubmit ~ myStatements:",
+        myStatements
+      )
+
+      if (myStatements.length === 2) {
+        player.set("gameStage", "game")
+      }
+    }
   }
 
   return (

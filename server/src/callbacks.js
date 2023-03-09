@@ -277,8 +277,9 @@ Empirica.on("player", "join", function (ctx, { player }) {
   console.log(`***********************************\n`)
 
   const prePopulatedStatements =
-    selectedTreatment.treatment.prePopulatedStatements.map(
-      (_statement, index) => {
+    selectedTreatment.treatment.prePopulatedStatements
+      .split("%%")
+      .map((_statement, index) => {
         return {
           id: `prePopulate_${index}`,
           text: _statement,
@@ -288,8 +289,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
           disagree: 0,
           uncertain: 0,
         }
-      }
-    )
+      })
 
   console.log(prePopulatedStatements)
 

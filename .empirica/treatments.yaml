@@ -40,6 +40,7 @@ factors:
             - Statement Five
             - Statement Six
             - Statement Seven
+        - value: I like Beef%%I Hate Beef%%My Name Is Set%%you are clever%%briliant app%%testing the array of a string%%please yes work
 treatments:
     - name: Two Players
       desc: Two-player Game
@@ -110,12 +111,5 @@ treatments:
         communication: chat
         numberPreStatements: 3
         playerCount: 5
-        prePopulatedStatements:
-            - Stament One
-            - Statement Two
-            - Statement Three
-            - Statement Four
-            - Statement Five
-            - Statement Six
-            - Statement Seven
+        prePopulatedStatements: I like Beef%%I Hate Beef%%My Name Is Set%%you are clever%%briliant app%%testing the array of a string%%please yes work
         question: economics

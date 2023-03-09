@@ -11,6 +11,7 @@ import { IntroVotePage } from "./components/IntroVotePage"
 import { GameScreen } from "./GameScreen"
 import { GameScreenMobile } from "./GameScreenMobile"
 import { Loading } from "@empirica/core/player/react"
+import { IntroStatementSubmitPage } from "./components/IntroStatementSubmitPage"
 
 export function GameSimple() {
   const game = useGame()
@@ -31,8 +32,8 @@ export function GameSimple() {
   function handleSubmit(event) {
     event.preventDefault()
     if (nickname) {
-      player.set("nickname", nickname)
       player.set("gameStage", "introEstimate")
+      player.set("nickname", nickname)
       // player.set("join", true) for OLD version where they click join button
     }
   }
@@ -172,6 +173,14 @@ export function GameSimple() {
     return (
       <>
         <IntroVotePage />
+      </>
+    )
+  }
+
+  if (player.get("gameStage") === "introStatementSubmit") {
+    return (
+      <>
+        <IntroStatementSubmitPage />
       </>
     )
   }

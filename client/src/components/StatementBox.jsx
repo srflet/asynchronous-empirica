@@ -134,7 +134,7 @@ export function StatementBox() {
       newStatements.length === game.get("treatment").numberPreStatements
     ) {
       console.log("!!!!!!!!!!!!!!!!!Voted on all intro statements!!!!!!!!!!!!")
-      player.set("gameStage", "game")
+      player.set("gameStage", "introStatementSubmit")
     }
   }
 
