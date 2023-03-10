@@ -11,26 +11,34 @@ export function PlayerList() {
   }
 
   const otherPlayers = players.filter((_p) => _p.id !== player.id)
-  const otherPlayerEls = players.map((_p) => {
-    return (
-      <li>
-        {_p.get("nickname")} | {_p.get("currentEstimate")}
-      </li>
-    )
-  })
 
-  const otherPlayersCards = players.map((_p) => {
-    return (
-      <PlayerCard
-        name={_p.get("nickname")}
-        estimate={_p.get("currentEstimate")}
-      />
-    )
-  })
+  const playersAnswered  = players.reduce((accumulator, _player) => {
+    if (_player.get("currentEstimate") !== undefined) {
+      return [...accumulator, _player]
+    }
+    return accumulator
+  }, [])
+
+  const allAnswers = players.reduce((accumulator, _player) => {
+    if (_player.get("currentEstimate") !== undefined) {
+      return [...accumulator, _player.get("currentEstimate")]
+    }
+    return accumulator
+  }, [])
+
+
+  
+  const mean = allAnswers.reduce((accumulator, answer) => accumulator + parseInt(answer), 0,) / allAnswers.length
 
   return (
-    <div className="h-full flex flex-col space-y-2 border border-solid rounded shadow">
-      <h1 className="p-t-6">Player List: </h1>
+    <div className="h-full p-4 flex flex-col space-y-2 border border-solid rounded shadow">
+      <h1 >Other Players: </h1>
+      {allAnswers.length >= 1 && (
+      <div className="bg-white border border-black border-solid rounded flex flex-wrap p-6 justify-between">
+        <p>Average:</p>
+        <p>{mean}</p>
+      </div>)}
+      <div className="bg-gray-100 h-full flex flex-col space-y-2 border border-solid rounded shadow">
       {otherPlayers.map((_player, index) => (
         <PlayerCard
           key={index}
@@ -38,6 +46,7 @@ export function PlayerList() {
           estimate={_player.get("currentEstimate")}
         />
       ))}
+      </div>
     </div>
   )
 }

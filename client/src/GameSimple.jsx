@@ -2,6 +2,7 @@ import {
   useGame,
   usePlayer,
   usePlayers,
+  useRound,
 } from "@empirica/core/player/classic/react"
 import React, { useState, useEffect } from "react"
 import { Timer } from "./components/Timer"
@@ -17,6 +18,7 @@ export function GameSimple() {
   const game = useGame()
   const players = usePlayers()
   const player = usePlayer()
+  const round = useRound()
 
   const [isMobile, setIsMobile] = useState(false)
 
@@ -123,6 +125,22 @@ export function GameSimple() {
       <div className="h-full flex flex-col items-center justify-center">
         {player.get("error") && <p>Error code: {player.get("errorCode")}</p>}
       </div>
+    )
+  }
+
+  if (!round) {
+    return (
+      <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <Loading />
+    </div>
+    )
+  }
+
+  if (round.get("name") === "FinalEstimate") {
+    return (
+      <>
+        <EstimatePage />
+      </>
     )
   }
 

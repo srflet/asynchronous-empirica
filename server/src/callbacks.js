@@ -333,8 +333,11 @@ Empirica.onGameStart(({ game }) => {
   //   })
   // })
   console.log("game started")
-  const round = game.addRound({ name: "Conversation" })
+  const round = game.addRound({ name: "Game" })
   round.addStage({ name: "Conversation", duration: 604800 })
+  const round2 = game.addRound({ name: "FinalEstimate" })
+  round2.addStage({ name: "FinalEstimate", duration: 86400 })
+   
 })
 
 Empirica.onRoundStart(({ round }) => {})

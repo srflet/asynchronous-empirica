@@ -11,6 +11,8 @@ import { InfoIcon } from "./components/SvgIcon"
 import { InstructionsBox } from "./components/InstructionsBox"
 
 export function GameScreen({ showInstructions, setShowInstructions, isChat }) {
+  
+  isChat =false
   return (
     <div className="relative h-9/10 w-full justify-center">
       <div

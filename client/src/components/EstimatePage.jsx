@@ -4,6 +4,7 @@ import {
   usePlayer,
   usePlayers,
   useStage,
+  useRound,
 } from "@empirica/core/player/classic/react"
 import { Loading } from "@empirica/core/player/react"
 import { TextBox } from "./TextBox"
@@ -12,8 +13,9 @@ import { EstimateSubmit } from "./EsimateSubmit"
 export function EstimatePage() {
   const game = useGame()
   const player = usePlayer()
+  const round = useRound()
 
-  if (!game | !player | (!game.hasEnded && player.get("preEstimate"))) {
+  if (!game | !player | !round | (!game.hasEnded && player.get("preEstimate"))) { //what does this do?? TODO
     return (
       <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <Loading />
