@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useGame, usePlayer } from "@empirica/core/player/classic/react"
 
-export function MessageSubmit() {
+export function MessageSubmit({ index }) {
   const game = useGame()
   const player = usePlayer()
   const [newMessage, setNewMessage] = useState({})
@@ -22,12 +22,14 @@ export function MessageSubmit() {
     if (!newMessage) {
       return
     }
-    const messages = game.get("messages") || []
+    let allMessages = game.get("messages") || []
+    const messages = allMessages[`${index}`] || []
     const newMessages = [...messages, newMessage]
 
-    setNewMessage({})
+    allMessages[`${index}`] = newMessages
 
-    game.set("messages", newMessages)
+    setNewMessage({})
+    game.set("messages", allMessages)
   }
 
   return (

@@ -1,0 +1,19 @@
+{
+  "questions": [
+    "Question text one. Answer this?",
+    "Question text two. How are you?",
+    "Question text three. Are you having fun yet?"
+  ],
+  "statements": [
+    "I like Beef",
+    "I Hate Beef",
+    "My Name Is Set",
+    "you are clever",
+    "briliant app",
+    "testing the array of a string",
+    "please yes work"
+  ],
+  "numberPreStatements": 3,
+  "communucation": "numerical",
+  "playerCount": 5
+}

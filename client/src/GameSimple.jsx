@@ -13,6 +13,8 @@ import { GameScreen } from "./GameScreen"
 import { GameScreenMobile } from "./GameScreenMobile"
 import { Loading } from "@empirica/core/player/react"
 import { IntroStatementSubmitPage } from "./components/IntroStatementSubmitPage"
+import { EmailInput } from "./components/EmailInput"
+import { Overlay } from "./components/Overlay"
 
 export function GameSimple() {
   const game = useGame()
@@ -23,19 +25,43 @@ export function GameSimple() {
   const [isMobile, setIsMobile] = useState(false)
 
   const [nickname, setNickname] = useState("")
+  const [email, setEmail] = useState("")
+  const [emailConfirm, setEmailConfirm] = useState("")
+  const [emailMatch, setEmailMatch] = useState(true)
+  const [questionView, setQuestionView] = useState(undefined)
+
   const [currentStatement, setCurrentStatement] = useState({})
   const [voted, setVoted] = useState(true)
 
-  const statements = game ? game.get("statements") : []
-  const seenStatements = player ? player.get("seenStatements") : []
-  const [preEstimate, setPreEstimate] = useState("")
-  const [showInstructions, setShowInstructions] = useState(false)
+  const statements = game ? game.get("statements") : {}
+  const seenStatements = player ? player.get("seenStatements") : {}
+  const [showOverlay, setShowOverlay] = useState(false)
 
   function handleSubmit(event) {
     event.preventDefault()
+
+    // if (player.get("emailContact")) {
+    //   if ((email.trim().length === 0) | (emailConfirm.trim().length === 0)) {
+    //     return
+    //   }
+    //   if (email !== emailConfirm) {
+    //     setEmailMatch(false)
+    //     return
+    //   }
+    //   console.log(`email: ${email}`)
+    //   console.log(`emailConfirm: ${emailConfirm}`)
+    //   console.log(`Match: ${emailMatch}`)
+    //   player.set("email", email)
+    // }
+    // setEmailMatch(true)
+
     if (nickname) {
-      player.set("gameStage", "introEstimate")
+      console.log("email check")
+
+      player.set("introIndex", 0)
+      player.set("gameStage", "introEstimate") //player.set("gameStage", "introEstimate")
       player.set("nickname", nickname)
+
       // player.set("join", true) for OLD version where they click join button
     }
   }
@@ -63,6 +89,10 @@ export function GameSimple() {
       }
     }
 
+    const emailContact = !("MID" in urlParams)
+    player.set("emailContact", emailContact)
+    console.log(`email contact: ${emailContact}`)
+
     const nullParams = ["participantKey", "MID"]
 
     const filterParams = Object.fromEntries(
@@ -89,11 +119,20 @@ export function GameSimple() {
     if (!player || !game) {
       return
     }
+
+    if (questionView === undefined) {
+      return
+    }
+
+    console.log(player.get("seenStatements"))
+
     const seenStatementIds = player
       .get("seenStatements")
-      .map((_statement) => _statement.id)
+      [`${questionView}`].map((_statement) => _statement.id)
 
-    const statementsToVote = statements.filter(
+    console.log(seenStatementIds)
+
+    const statementsToVote = statements[`${questionView}`].filter(
       (_statement) => !seenStatementIds.includes(_statement.id)
     )
     if (!statementsToVote) {
@@ -128,22 +167,6 @@ export function GameSimple() {
     )
   }
 
-  if (!round) {
-    return (
-      <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <Loading />
-    </div>
-    )
-  }
-
-  if (round.get("name") === "FinalEstimate") {
-    return (
-      <>
-        <EstimatePage />
-      </>
-    )
-  }
-
   const treatment = game.get("treatment")
   const question = treatment.question
   const hasPreEstimate = player.get("preEstimate")
@@ -166,6 +189,15 @@ export function GameSimple() {
               onChange={(e) => setNickname(e.target.value)}
             />
           </div>
+          {player.get("emailContact") && (
+            <EmailInput
+              email={email}
+              setEmail={setEmail}
+              emailConfirm={emailConfirm}
+              setEmailConfirm={setEmailConfirm}
+              emailMatch={emailMatch}
+            />
+          )}
           <div className="flex space-x-1 justify-center items-center ">
             <button
               className="px-2 py-1 bg-teal-500 text-white"
@@ -206,26 +238,38 @@ export function GameSimple() {
   const isChat = treatment.communication === "chat"
   if (player.get("gameStage") === "game") {
     return (
-      <>
-        {isMobile ? (
+      <div className="flex w-full h-full justify-center align-center">
+        {questionView === undefined ? (
+          <Overlay
+            isMobile={isMobile}
+            questionView={questionView}
+            setQuestionView={setQuestionView}
+          />
+        ) : isMobile ? (
           <GameScreenMobile
-            showInstructions={showInstructions}
-            setShowInstructions={setShowInstructions}
+            showOverlay={showOverlay}
+            setShowOverlay={setShowOverlay}
             isChat={isChat}
+            questionView={questionView}
+            setQuestionView={setQuestionView}
           />
         ) : (
           <GameScreen
-            showInstructions={showInstructions}
-            setShowInstructions={setShowInstructions}
+            showOverlay={showOverlay}
+            setShowOverlay={setShowOverlay}
             isChat={isChat}
+            questionView={questionView}
+            setQuestionView={setQuestionView}
           />
         )}
-      </>
+      </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <p>{player.get("gameStage")}</p>
+      <p>Game Screen</p>
       <Loading />
     </div>
   )

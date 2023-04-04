@@ -17,7 +17,7 @@ export function NewPlayer({ onPlayerID, connecting }) {
     }
 
     onPlayerID(id)
-  }, [onPlayerID, connecting])
+  }, [])
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
@@ -36,7 +36,7 @@ export function NewPlayer({ onPlayerID, connecting }) {
           Enter your Player Identifier
         </h2>
       </div> */}
-
+      <p>New player creation form</p>
       <Loading />
       {/* <div className="loader"></div> */}
       {/* <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">

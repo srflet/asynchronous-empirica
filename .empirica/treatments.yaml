@@ -29,17 +29,40 @@ factors:
       values:
         - value: 3
         - value: 5
+    - name: config
+      desc: test file for a json config containing questions and prepopulated statements
+      values:
+        - value:
+            questions:
+                - Question Text One
+                - Question Text Two
+            statements:
+                - Pre statement one
+                - Pre statment two
+                - Pre statment three
+                - Pre statment four
+                - Pre statment five
+        - value:
+            questions:
+                - Question text one. Answer this?
+                - Question text two. What day is it?
+                - Question text three. Are you having fun yet?
+            statements:
+                - I like Beef
+                - I Hate Beef
+                - My Name Is Set
+                - you are clever
+                - briliant app
+                - testing the array of a string
+                - please yes work
+    - name: questions
+      desc: '%% seperated string of all questions.'
+      values:
+        - value: This is a question about sports? How are you?%%This is a questions about economics? What's your favourite colour?%%This is a question about politics? Is it raining today?
     - name: prePopulatedStatements
       desc: field contating an stringified array of strings, each string is a statement for the intro steps.
       values:
-        - value:
-            - Stament One
-            - Statement Two
-            - Statement Three
-            - Statement Four
-            - Statement Five
-            - Statement Six
-            - Statement Seven
+        - value: Sports Statement One%%Sports Statement Two%%Sports Statement Three%%Sports Statement Four%%Sports Statement Five%%Sports Statement Six%%Sports Statement Seven##Economics Statement One%%Economics Statement Two%%Economics Statement Three%%Economics Statement Four%%Economics Statement Five%%Economics Statement Six%%Economics Statement Seven##Politics Statement One%%Politics Statement Two%%Politics Statement Three%%Politics Statement Four%% Politics Statement Five%%Politics Statement Six%%Politics Statement Seven
         - value: I like Beef%%I Hate Beef%%My Name Is Set%%you are clever%%briliant app%%testing the array of a string%%please yes work
 treatments:
     - name: Two Players
@@ -108,8 +131,8 @@ treatments:
         question: sports
     - name: Econ 5
       factors:
-        communication: chat
+        communication: numerical
         numberPreStatements: 3
         playerCount: 5
-        prePopulatedStatements: I like Beef%%I Hate Beef%%My Name Is Set%%you are clever%%briliant app%%testing the array of a string%%please yes work
-        question: economics
+        prePopulatedStatements: Sports Statement One%%Sports Statement Two%%Sports Statement Three%%Sports Statement Four%%Sports Statement Five%%Sports Statement Six%%Sports Statement Seven##Economics Statement One%%Economics Statement Two%%Economics Statement Three%%Economics Statement Four%%Economics Statement Five%%Economics Statement Six%%Economics Statement Seven##Politics Statement One%%Politics Statement Two%%Politics Statement Three%%Politics Statement Four%% Politics Statement Five%%Politics Statement Six%%Politics Statement Seven
+        questions: This is a question about sports? How are you?%%This is a questions about economics? What's your favourite colour?%%This is a question about politics? Is it raining today?

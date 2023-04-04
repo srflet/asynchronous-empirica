@@ -8,6 +8,7 @@ export function StatementCard({
   disagree,
   personal,
   statementId,
+  index,
 }) {
   const player = usePlayer()
 
@@ -15,10 +16,11 @@ export function StatementCard({
     return null
   }
 
+  const seenStatements = player.get("seenStatements")[`${index}`]
+
   const myVote =
-    player
-      .get("seenStatements")
-      ?.find((_statement) => _statement.id === statementId)?.vote || ""
+    seenStatements.find((_statement) => _statement.id === statementId)?.vote ||
+    ""
 
   return (
     <div className="flex flex-col border border-solid rounded shadow">

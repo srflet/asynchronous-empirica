@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { useGame, usePlayer } from "@empirica/core/player/classic/react"
 
-export function StatementBox() {
+export function StatementBox({ index }) {
   const game = useGame()
   const player = usePlayer()
   const [currentStatement, setCurrentStatement] = useState({})
   const [voted, setVoted] = useState(true)
-  const statements = game ? game.get("statements") : []
-  const seenStatements = player ? player.get("seenStatements") : []
+  const statements = game ? game.get("statements") : {}
+  const seenStatements = player ? player.get("seenStatements") : {}
 
   useEffect(() => {
     console.log("firing use effect to make intro statements")
@@ -20,7 +20,7 @@ export function StatementBox() {
     }
 
     console.log(statements)
-    console.log("game and player exist")
+    console.log("game and player exsit")
 
     console.log(`game stage is ${player.get("gameStage")}`)
 
@@ -35,41 +35,85 @@ export function StatementBox() {
       nStatements
     )
 
-    let prePopStatements = JSON.parse(JSON.stringify(statements))
+    const prePopStatements = Object.entries(statements).reduce(
+      (accumulator, [key, value], index) => {
+        console.log(key, value)
+        return {
+          ...accumulator,
+          [index]: value.reduce((sub_accumulator, _statement) => {
+            if (_statement.author === "prePopulated") {
+              return [...sub_accumulator, _statement]
+            }
+            return sub_accumulator
+          }, []),
+        }
+      },
+      {}
+    )
+
+    console.log(prePopStatements)
+
+    // const prePopStatements = statements.map((_statements, index) => {
+    //   console.log(_statements)
+    //   console.log(typeof _statements)
+    //   return {
+    //     [index]: _statements[`${index}`].reduce((accumulator, _statement) => {
+    //       if (_statement.author === "prePopulated") {
+    //         return [...accumulator, _statement]
+    //       }
+    //       return accumulator
+    //     }, []),
+    //   }
+    // })
+
     console.log(
-      "🚀 ~ file: StatementBox.jsx:32 ~ useEffect ~ prePopStatements:",
+      "🚀 ~ file: StatementBox.jsx:48 ~ prePopStatements ~ prePopStatements:",
       prePopStatements
     )
 
-    shuffleArray(prePopStatements)
-    let statementsForIntro = prePopStatements.slice(0, nStatements)
-    console.log(
-      "🚀 ~ file: StatementBox.jsx:26 ~ useEffect ~ statementsForIntro:",
-      statementsForIntro
+    const introStatements = Object.entries(prePopStatements).reduce(
+      (accumulator, [key, value], index) => {
+        console.log(value)
+        let statementArray = value
+        shuffleArray(statementArray)
+        return {
+          ...accumulator,
+          [index]: statementArray.slice(0, nStatements),
+        }
+      },
+      {}
     )
 
-    player.set("introStatements", statementsForIntro)
+    player.set("introStatements", introStatements)
+    console.log(
+      "🚀 ~ file: StatementBox.jsx:69 ~ useEffect ~ introStatements:",
+      introStatements
+    )
   }, [])
 
   useEffect(() => {
+    console.log("changing statement #95")
     if (!player || !game) {
       return
     }
-    console.log("firing effect statements to vote")
+    console.log("changing statement #99")
+
+    // console.log("firing effect statements to vote")
+    // console.log(player.get("seenStatements")[`${index}`])
     const seenStatementIds = player
       .get("seenStatements")
-      .map((_statement) => _statement.id)
+      [`${index}`].map((_statement) => _statement.id)
 
     let useStatements =
       player.get("gameStage") === "introVote"
-        ? player.get("introStatements")
-        : statements.slice()
+        ? player.get("introStatements")[`${index}`]
+        : statements[`${index}`].slice()
 
-    console.log(`player stage is: ${player.get("gameStage")}`)
-    console.log(
-      "🚀 ~ file: StatementBox.jsx:61 ~ useEffect ~ useStatements:",
-      useStatements
-    )
+    // console.log(`player stage is: ${player.get("gameStage")}`)
+    // console.log(
+    //   "🚀 ~ file: StatementBox.jsx:61 ~ useEffect ~ useStatements:",
+    //   useStatements
+    //)
 
     let statementsToVote = useStatements.filter(
       (_statement) => !seenStatementIds.includes(_statement.id)
@@ -80,8 +124,7 @@ export function StatementBox() {
 
       return
     }
-
-    console.log(`voted: ${voted}`)
+    console.log("changing statement #127")
 
     if (!currentStatement) {
       setCurrentStatement(
@@ -92,6 +135,8 @@ export function StatementBox() {
       return
     }
 
+    console.log("changing statement #139")
+
     if (voted) {
       setCurrentStatement(
         statementsToVote[Math.floor(Math.random() * statementsToVote.length)]
@@ -100,7 +145,36 @@ export function StatementBox() {
 
       return
     }
+    console.log("changing statement #150")
   }, [seenStatements, statements])
+
+  useEffect(() => {
+    console.log("changing statement #95")
+    if (!player || !game) {
+      return
+    }
+    console.log("changing statement #99")
+
+    // console.log("firing effect statements to vote")
+    // console.log(player.get("seenStatements")[`${index}`])
+    const seenStatementIds = player
+      .get("seenStatements")
+      [`${index}`].map((_statement) => _statement.id)
+
+    let useStatements =
+      player.get("gameStage") === "introVote"
+        ? player.get("introStatements")[`${index}`]
+        : statements[`${index}`].slice()
+
+    let statementsToVote = useStatements.filter(
+      (_statement) => !seenStatementIds.includes(_statement.id)
+    )
+
+    setCurrentStatement(
+      statementsToVote[Math.floor(Math.random() * statementsToVote.length)]
+    )
+    setVoted(false)
+  }, [index])
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -115,19 +189,24 @@ export function StatementBox() {
 
     const { no, uncertain, yes, ...thisStatement } = currentStatement
 
-    const prevSeenStatements = player.get("seenStatements")
+    let seenStatements = player.get("seenStatements")
+    const previousStatements = seenStatements[`${index}`]
     const newStatements = [
-      ...prevSeenStatements,
+      ...previousStatements,
       {
         ...thisStatement,
         vote: vote,
       },
     ]
 
-    updateGameStatements(currentStatement, vote)
+    seenStatements[`${index}`] = newStatements
 
-    player.set("seenStatements", newStatements)
+    updateGameStatements(index, currentStatement, vote)
+
+    player.set("seenStatements", seenStatements)
     setVoted(true)
+
+    console.log(newStatements)
 
     if (
       player.get("gameStage") === "introVote" &&
@@ -138,30 +217,34 @@ export function StatementBox() {
     }
   }
 
-  function updateGameStatements(thisStatement, vote) {
-    const gameStatements = game
-      .get("statements")
-      .filter((_statement) => _statement.id !== thisStatement.id)
+  function updateGameStatements(index, thisStatement, vote) {
+    let gameStatements = game.get("statements")
 
-    console.log(gameStatements)
+    const questionStatements = gameStatements[`${index}`]
 
-    const currentStatement = game
-      .get("statements")
-      .find((_statement) => _statement.id === thisStatement.id)
+    const previousStatements = questionStatements.filter(
+      (_statement) => _statement.id !== thisStatement.id
+    )
 
-    console.log(currentStatement)
+    console.log(previousStatements)
+
+    const currentStatement = questionStatements.find(
+      (_statement) => _statement.id === thisStatement.id
+    )
+
+    // console.log(currentStatement)
 
     const newStatements = [
-      ...gameStatements,
+      ...previousStatements,
       {
         ...currentStatement,
         [vote]: currentStatement[vote] + 1,
       },
     ]
 
-    console.log(newStatements)
+    gameStatements[`${index}`] = newStatements
 
-    game.set("statements", newStatements)
+    game.set("statements", gameStatements)
   }
 
   if (!game || !player) {

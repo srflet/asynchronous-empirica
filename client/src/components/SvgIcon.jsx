@@ -1,8 +1,8 @@
 import React from "react"
 
-export function InfoIcon({ showInstructions, setShowInstructions, isMobile }) {
+export function InfoIcon({ showOverlay, setShowOverlay, isMobile }) {
   function handleClick() {
-    setShowInstructions(!showInstructions)
+    setShowOverlay(!showOverlay)
   }
   return (
     <svg

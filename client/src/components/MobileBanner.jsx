@@ -4,8 +4,8 @@ import { InfoIcon } from "./SvgIcon"
 export function MobileBanner({
   view,
   setView,
-  showInstructions,
-  setShowInstructions,
+  showOverlay,
+  setShowOverlay,
   isMobile,
 }) {
   function handleClick(event) {
@@ -49,8 +49,8 @@ export function MobileBanner({
         Vote Tally
       </button>
       <InfoIcon
-        showInstructions={showInstructions}
-        setShowInstructions={setShowInstructions}
+        showOverlay={showOverlay}
+        setShowOverlay={setShowOverlay}
         isMobile={isMobile}
       />
     </div>

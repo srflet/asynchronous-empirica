@@ -9,54 +9,63 @@ import { StatementList } from "./components/StatementList"
 import { Chat } from "./components/Chat"
 import { MobileBanner } from "./components/MobileBanner"
 import { InstructionsBox } from "./components/InstructionsBox"
+import { Overlay } from "./components/Overlay"
 
 export function GameScreenMobile({
-  showInstructions,
-  setShowInstructions,
+  showOverlay,
+  setShowOverlay,
   isChat,
+  questionView,
+  setQuestionView,
 }) {
   const [view, setView] = useState("estimate") // can be estimate | vote | statements
 
   return (
-    <div className="relative h-full w-full justify-center">
+    <div className="relative h-full w-full justify-center align-center">
       <div
         className={`h-9/10 min-w-350px max-w-400px flex flex-col m-4 align-center space-y-4 ${
-          showInstructions && "opacity-20"
+          showOverlay && "opacity-20 pointer-events-none touch-none"
         }`}
       >
         <MobileBanner
           view={view}
           setView={setView}
-          showInstructions={showInstructions}
-          setShowInstructions={setShowInstructions}
+          showOverlay={showOverlay}
+          setShowOverlay={setShowOverlay}
           isMobile={true}
         />
         <EndDateBox />
-        <TextBox type="Question" />
+        <TextBox type="Question" index={questionView} />
         {view === "estimate" && (
           <>
-            <CurrentEstimate />
-            {isChat ? <Chat /> : <PlayerList />}
+            <CurrentEstimate index={questionView} />
+            {isChat ? (
+              <Chat index={questionView} />
+            ) : (
+              <PlayerList index={questionView} />
+            )}
           </>
         )}
 
         {view === "vote" && (
           <>
-            <StatementBox />
-            <StatementSubmit />
+            <StatementBox index={questionView} />
+            <StatementSubmit index={questionView} />
           </>
         )}
 
         {view === "statements" && (
           <>
-            <StatementList />
+            <StatementList index={questionView} />
           </>
         )}
       </div>
-      {showInstructions && (
-        <InstructionsBox
+      {showOverlay && (
+        <Overlay
+          setShowOverlay={setShowOverlay}
+          setQuestionView={setQuestionView}
           isMobile={true}
-          setShowInstructions={setShowInstructions}
+          questionView={questionView}
         />
       )}
     </div>

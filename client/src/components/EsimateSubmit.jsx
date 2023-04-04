@@ -6,7 +6,7 @@ import {
   useRound,
 } from "@empirica/core/player/classic/react"
 
-export function EstimateSubmit() {
+export function EstimateSubmit({ index }) {
   const [estimate, setEstimate] = useState("")
   const player = usePlayer()
 
@@ -15,18 +15,22 @@ export function EstimateSubmit() {
   }
 
   const estimateType =
-    player.get("gameStage") === "introEstimate" ? "preEstimate" : "postEstimate"
+    player.get("gameStage") === "introEstimate"
+      ? "preEstimate"
+      : "currentEstimate"
 
   function handleSubmit(event) {
     event.preventDefault()
     console.log(`estimate type is: ${estimateType}`)
 
-    player.set("currentEstimate", estimate)
-    player.set(`${estimateType}`, estimate)
-    if (estimateType === "preEsimate") {
+    let estimateObject = player.get(`${estimateType}`) || {}
+    estimateObject[`${index}`] = estimate
+
+    player.set(`${estimateType}`, estimateObject)
+
+    if (estimateType === "preEstimate") {
       player.set("gameStage", "introVote")
     }
-    
   }
 
   return (

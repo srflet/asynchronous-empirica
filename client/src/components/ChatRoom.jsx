@@ -8,7 +8,7 @@ export function ChatRoom() {
     return null
   }
 
-  const messages = game.get("messages") || []
+  const messages = game.get("messages")[`${index}`] || []
 
   const sortedMessages = messages.sort((a, b) => a.timeStamp < b.timeStamp)
 

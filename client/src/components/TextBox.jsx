@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useGame } from "@empirica/core/player/classic/react"
 
-export function TextBox({ type }) {
+export function TextBox({ type, index = null }) {
   const game = useGame()
 
   if (!game) {
@@ -12,11 +12,11 @@ export function TextBox({ type }) {
 
   if (type === "Question") {
     const treatment = game.get("treatment")
-    text = `This is a question about ${treatment.question.toUpperCase()}. This is filler text for the question. What do you think?`
+    text = treatment.questions[index]
   }
   return (
     <>
-      <div className="h-full p-8 space-y-10 border border-solid rounded shadow flex flex-col">
+      <div className="h-full w-auto p-8 space-y-10 border border-solid rounded shadow flex flex-col">
         <h1>{type}: </h1>
         <p>{text}</p>
       </div>

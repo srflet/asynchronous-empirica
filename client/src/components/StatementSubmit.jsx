@@ -5,7 +5,7 @@ import {
   usePlayers,
 } from "@empirica/core/player/classic/react"
 
-export function StatementSubmit() {
+export function StatementSubmit({ index }) {
   const [statement, setStatement] = useState("")
   const player = usePlayer()
   const game = useGame()
@@ -20,7 +20,9 @@ export function StatementSubmit() {
 
     console.log(statement)
 
-    const prevStatements = game.get("statements")
+    let gameStatements = game.get("statements")
+
+    const prevStatements = gameStatements[`${index}`]
     const newStatements = [
       ...prevStatements,
       {
@@ -39,7 +41,9 @@ export function StatementSubmit() {
 
     setStatement("")
 
-    game.set("statements", newStatements)
+    gameStatements[`${index}`] = newStatements
+
+    game.set("statements", gameStatements)
     // game.append("messages", {
     //   text: message,
     //   timeStamp: new Date(TimeSync.serverTime(null, 1000)),
@@ -55,7 +59,14 @@ export function StatementSubmit() {
         myStatements
       )
 
-      if (myStatements.length === 2) {
+      console.log(index, game.get("treatment").questions.length)
+
+      if (myStatements.length >= 2) {
+        if (index < game.get("treatment").questions.length - 1) {
+          player.set("introIndex", player.get("introIndex") + 1)
+          player.set("gameStage", "introEstimate")
+          return
+        }
         player.set("gameStage", "game")
       }
     }
