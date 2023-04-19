@@ -151,6 +151,7 @@ Empirica.on("player", function (ctx, { player }) {
 })
 
 Empirica.on("player", "join", function (ctx, { player }) {
+  console.log("!!!!!!!!!!!!! FIRING PLAYER JOIN!!!!!!!!!!")
   if (!player.get("join")) {
     return
   }
@@ -158,11 +159,11 @@ Empirica.on("player", "join", function (ctx, { player }) {
   const filterParams = player.get("filterParams")
   // console.log(`filter key is: ${filterParams}`)
 
-  console.log("\n---------treatments vector START----------\n")
+  // console.log("\n---------treatments vector START----------\n")
   let treatmentVector = []
   const allBatches = Array.from(ctx.scopesByKind("batch").values())
   // console.log(`Batch ID: ${allBatches.length}`)
-  console.log(`Number of batches: ${allBatches.length}`)
+  // console.log(`Number of batches: ${allBatches.length}`)
   allBatches.forEach((_batch) => {
     if (!_batch.isRunning) {
       return
@@ -171,18 +172,18 @@ Empirica.on("player", "join", function (ctx, { player }) {
     // console.log(`Batch has ended: ${_batch.hasEnded}`)
     // console.log(`Batch is running : ${_batch.isRunning}`)
     const allTreatments = _batch.get("config").config.treatments
-    console.log("-------- LOOK HERE FOR CONFIGS -----------")
+    // console.log("-------- LOOK HERE FOR CONFIGS -----------")
     allTreatments.forEach((_treatment) => {
-      console.log(_treatment.treatment.factors)
-      console.log("here")
-      console.log(_treatment.treatment)
+      // console.log(_treatment.treatment.factors)
+      // console.log("here")
+      // console.log(_treatment.treatment)
 
       const currentPlayerCount =
         _batch.get(`${_treatment.treatment.name}PlayerCount`) || 0
 
-      console.log(
-        `Current player count: ${currentPlayerCount}\nMax player count ${_treatment.treatment.factors.playerCount}`
-      )
+      // console.log(
+      //   `Current player count: ${currentPlayerCount}\nMax player count ${_treatment.treatment.factors.playerCount}`
+      // )
 
       if (currentPlayerCount < _treatment.treatment.factors.playerCount) {
         treatmentVector = [
@@ -200,15 +201,16 @@ Empirica.on("player", "join", function (ctx, { player }) {
         _batch.set(`${_treatment.treatment.name}PlayerCount`, 0)
       }
 
-      console.log(
-        `Number of players in ${_treatment.treatment.name} is: ${_batch.get(
-          `${_treatment.treatment.name}PlayerCount`
-        )}`
-      )
+      // console.log(
+      //   `Number of players in ${_treatment.treatment.name} is: ${_batch.get(
+      //     `${_treatment.treatment.name}PlayerCount`
+      //   )}`
+      // )
     })
   })
 
   if (player.currentRound) {
+    // TODO look here for bug in intro - blank page needed to refresh before seeing nickname screen
     // case where join is called every refresh, reasigning the player to the game and filling spaces
     console.log(`player: ${player.id} has already been assigned to a game`)
     return
@@ -217,7 +219,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
   // console.log(treatmentVector)
 
   if (treatmentVector.length === 0) {
-    console.log("Error is no batches")
+    // console.log("Error is no batches")
     player.set("error", true)
     player.set("errorCode", "noBatches")
     return
@@ -228,7 +230,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
   const sortedTreatmentVector = treatmentVector.sort((a, b) =>
     a.batchId > b.batchId ? 1 : -1
   )
-  console.log("\n---------sorted vector\n")
+  // console.log("\n---------sorted vector\n")
   // console.log(sortedTreatmentVector)
   // console.log(filterParams)
 
@@ -249,8 +251,8 @@ Empirica.on("player", "join", function (ctx, { player }) {
     })
   }
 
-  console.log("\n---------available batches\n")
-  console.log(filteredBatches)
+  // console.log("\n---------available batches\n")
+  // console.log(filteredBatches)
 
   if (filteredBatches.length === 0) {
     // console.log("no games")
@@ -269,17 +271,17 @@ Empirica.on("player", "join", function (ctx, { player }) {
     }
     finalTreatmentVector = [...finalTreatmentVector, _batch]
   })
-  console.log("\n---------final vector\n")
-  console.log(finalTreatmentVector)
+  // console.log("\n---------final vector\n")
+  // console.log(finalTreatmentVector)
 
   shuffleArray(finalTreatmentVector) //shuffles vector in place
   let selectedTreatment = finalTreatmentVector[0] // TODO choose a way of selecting from the filtered batches
 
-  console.log("\n---------selected batch is:\n")
+  // console.log("\n---------selected batch is:\n")
 
-  console.log(selectedTreatment)
-  console.log(selectedTreatment.treatment.config)
-  console.log(typeof selectedTreatment.treatment.config)
+  // console.log(selectedTreatment)
+  // console.log(selectedTreatment.treatment.config)
+  // console.log(typeof selectedTreatment.treatment.config)
   const batchId = selectedTreatment.batchId
   // console.log(batchId)
   // console.log(`Error is: ${player.get("errorCode")}`)
@@ -300,11 +302,11 @@ Empirica.on("player", "join", function (ctx, { player }) {
     console.warn("no games found")
     // return
   }
-  if (batch.games.length > 0) {
-    batch.games.forEach((_game) => {
-      console.log(_game.get("treatment"))
-    })
-  }
+  // if (batch.games.length > 0) {
+  //   batch.games.forEach((_game) => {
+  //     console.log(_game.get("treatment"))
+  //   })
+  // }
 
   const availableGames = batch.games
     .filter(function (_game) {
@@ -316,22 +318,23 @@ Empirica.on("player", "join", function (ctx, { player }) {
       )
     })
     .sort((a, b) => (a.timeStamp > b.timeStamp ? 1 : -1))
-  console.log(`Number of potential games: \n ${availableGames.length}`)
+  // console.log(`Number of potential games: \n ${availableGames.length}`)
 
-  availableGames.forEach((_game) => {
-    console.log(_game.get("treatment"))
-  })
+  // availableGames.forEach((_game) => {
+  //   console.log(_game.get("treatment"))
+  // })
 
   const game =
     availableGames.length === 1
       ? availableGames[0]
       : availableGames[Math.floor(Math.random() * availableGames.length)]
 
-  console.log(`number of games available is: ${availableGames.length}`)
+  // console.log(`number of games available is: ${availableGames.length}`)
 
   // console.log(game)
   if (game) {
-    player.set("join", null)
+    console.log("game found")
+    player.set("join", false)
     // console.log("Game here")
 
     // availableGames.forEach((_game) => {
@@ -356,57 +359,62 @@ Empirica.on("player", "join", function (ctx, { player }) {
     return
   }
 
-  console.log("No game here")
+  // console.log("No game here")
 
   console.log(`********************** STATMENTS FROM TREATMENT********\n`)
-  // console.log(selectedTreatment.treatment.prePopulatedStatements)
+  console.log(selectedTreatment.treatment.prePopulatedComments)
   console.log(`***********************************\n`)
 
-  const prePopulatedStatements =
-    selectedTreatment.treatment.prePopulatedStatements
-      .split("##")
-      .reduce((accumulator, _statements, index) => {
-        return {
-          ...accumulator,
-          [index]: _statements.split("%%").map((_statement, subIndex) => {
-            return {
-              id: `prePopulate_${subIndex}`,
-              text: _statement,
-              timeStamp: null,
-              author: "prePopulated",
-              agree: 0,
-              disagree: 0,
-              uncertain: 0,
-            }
-          }),
-        }
-      }, {})
+  const prePopulatedComments = selectedTreatment.treatment.prePopulatedComments
+    .split("##")
+    .reduce((accumulator, _comments, index) => {
+      return {
+        ...accumulator,
+        [index]: _comments.split("%%").map((_comment, subIndex) => {
+          return {
+            id: `prePopulate_${subIndex}`,
+            text: _comment,
+            timeStamp: null,
+            author: "prePopulated",
+            agree: 0,
+            disagree: 0,
+            uncertain: 0,
+          }
+        }),
+      }
+    }, {})
 
-  console.log("prepopulated statements array: ", prePopulatedStatements)
+  // console.log("prepopulated comments array: ", prePopulatedComments)
 
-  Object.entries(prePopulatedStatements).forEach(([key, value]) => {
-    console.log(prePopulatedStatements[key])
-  })
+  // Object.entries(prePopulatedComments).forEach(([key, value]) => {
+  //   console.log(prePopulatedComments[key])
+  // })
 
-  console.log(prePopulatedStatements["0"])
+  // console.log(prePopulatedComments["0"])
 
   const questionsArray = selectedTreatment.treatment.questions
     .split("%%")
-    .map((_question) => {
-      return _question
+    .map((_questionInfo) => {
+      const _questionSplit = _questionInfo.split("&&")
+      return {
+        question: _questionSplit[0],
+        moreDetails: _questionSplit[1],
+      }
     })
 
-  console.log("----- Selected treatment with questions array ------")
+  // console.log("----- Selected treatment with questions array ------")
   selectedTreatment.treatment["questions"] = questionsArray
-  selectedTreatment.treatment["prePopulatedStatements"] = prePopulatedStatements
-  console.log(selectedTreatment)
+  selectedTreatment.treatment["prePopulatedComments"] = prePopulatedComments
+  // console.log(selectedTreatment)
 
   batch.addGame({
     playersIds: [player.id],
-    statements: prePopulatedStatements,
+    comments: prePopulatedComments,
     treatment: selectedTreatment.treatment,
     timeStamp: new Date().getTime(),
   })
+  console.log("game added")
+  player.set("join", true)
 })
 
 // OLD CODE FROM NICOLAS - was breaking games by assisgning too many players!!!!
@@ -435,7 +443,7 @@ Empirica.on("player", "gameID", function (ctx, { player }) {
   player.currentGame.start()
 
   // this is GOLD
-  const initialSeenStatements = player.currentGame
+  const initialSeenComments = player.currentGame
     .get("treatment")
     .questions.reduce((accumulator, _q, index) => {
       return {
@@ -444,10 +452,9 @@ Empirica.on("player", "gameID", function (ctx, { player }) {
       }
     }, {})
 
-  console.log("!!!!!!!!!!! INTITIAL SEEN STATEMENTS OBJECT !!!!!!!")
-  console.log(initialSeenStatements)
-  !player.get("seenStatements") &&
-    player.set("seenStatements", initialSeenStatements)
+  // console.log("!!!!!!!!!!! INTITIAL SEEN COMMENTS OBJECT !!!!!!!")
+  // console.log(initialSeenComments)
+  !player.get("seenComments") && player.set("seenComments", initialSeenComments)
 })
 
 Empirica.onGameStart(({ game }) => {
@@ -483,9 +490,9 @@ Empirica.onRoundStart(({ round }) => {
       "name"
     )}xxxxxxxxxxxxxxxxx`
   )
-  round.currentGame.players.forEach((_player) => {
-    console.log(_player.Identifier)
-  })
+  // round.currentGame.players.forEach((_player) => {
+  //   console.log(_player.Identifier)
+  // })
 })
 
 Empirica.onStageStart(({ stage }) => {})

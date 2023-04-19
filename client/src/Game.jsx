@@ -5,7 +5,7 @@ import {
 } from "@empirica/core/player/classic/react"
 import React, { useState, useEffect } from "react"
 import { Timer } from "./components/Timer"
-import { StatementSubmit } from "./components/StatementSubmit"
+import { CommentSubmit } from "./components/CommentSubmit"
 import { p } from "@antfu/utils"
 import { EstimatePage } from "./components/EstimatePage"
 
@@ -15,11 +15,11 @@ export function Game() {
   const player = usePlayer()
 
   const [nickname, setNickname] = useState("")
-  const [currentStatement, setCurrentStatement] = useState({})
+  const [currentComment, setCurrentComment] = useState({})
   const [voted, setVoted] = useState(true)
 
-  const statements = game ? game.get("statements") : []
-  const seenStatements = player ? player.get("seenStatements") : []
+  const comments = game ? game.get("comments") : []
+  const seenComments = player ? player.get("seenComments") : []
   const [preEstimate, setPreEstimate] = useState("")
 
   useEffect(() => {
@@ -68,23 +68,23 @@ export function Game() {
       return
     }
     console.log("firing effect")
-    const seenStatementIds = player
-      .get("seenStatements")
-      .map((_statement) => _statement.id)
+    const seenCommentIds = player
+      .get("seenComments")
+      .map((_comment) => _comment.id)
 
-    const statementsToVote = statements.filter(
-      (_statement) => !seenStatementIds.includes(_statement.id)
+    const commentsToVote = comments.filter(
+      (_comment) => !seenCommentIds.includes(_comment.id)
     )
-    if (!statementsToVote) {
-      setCurrentStatement({})
+    if (!commentsToVote) {
+      setCurrentComment({})
       return
     }
 
     console.log(`voted: ${voted}`)
 
-    if (!currentStatement) {
-      setCurrentStatement(
-        statementsToVote[Math.floor(Math.random() * statementsToVote.length)]
+    if (!currentComment) {
+      setCurrentComment(
+        commentsToVote[Math.floor(Math.random() * commentsToVote.length)]
       )
       setVoted(false)
 
@@ -92,14 +92,14 @@ export function Game() {
     }
 
     if (voted) {
-      setCurrentStatement(
-        statementsToVote[Math.floor(Math.random() * statementsToVote.length)]
+      setCurrentComment(
+        commentsToVote[Math.floor(Math.random() * commentsToVote.length)]
       )
       setVoted(false)
 
       return
     }
-  }, [seenStatements, statements])
+  }, [seenComments, comments])
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -144,9 +144,9 @@ export function Game() {
     event.preventDefault()
     const vote = event.target.value
 
-    const { no, uncertain, yes, ...thisStatement } = currentStatement
+    const { no, uncertain, yes, ...thisStatement } = currentComment
 
-    const prevSeenStatements = player.get("seenStatements")
+    const prevSeenStatements = player.get("seenComments")
     const newStatements = [
       ...prevSeenStatements,
       {
@@ -155,9 +155,9 @@ export function Game() {
       },
     ]
 
-    updateGameStatements(currentStatement, vote)
+    updateGameStatements(currentComment, vote)
 
-    player.set("seenStatements", newStatements)
+    player.set("seenComments", newStatements)
     setVoted(true)
   }
   // if (!messages) {
@@ -166,28 +166,28 @@ export function Game() {
 
   function updateGameStatements(thisStatement, vote) {
     const gameStatements = game
-      .get("statements")
-      .filter((_statement) => _statement.id !== thisStatement.id)
+      .get("comments")
+      .filter((_comment) => _comment.id !== thisStatement.id)
 
     console.log(gameStatements)
 
-    const currentStatement = game
-      .get("statements")
-      .find((_statement) => _statement.id === thisStatement.id)
+    const currentComment = game
+      .get("comments")
+      .find((_comment) => _comment.id === thisStatement.id)
 
-    console.log(currentStatement)
+    console.log(currentComment)
 
     const newStatements = [
       ...gameStatements,
       {
-        ...currentStatement,
-        [vote]: currentStatement[vote] + 1,
+        ...currentComment,
+        [vote]: currentComment[vote] + 1,
       },
     ]
 
     console.log(newStatements)
 
-    game.set("statements", newStatements)
+    game.set("comments", newStatements)
   }
 
   const treatment = game.get("treatment")
@@ -301,13 +301,13 @@ export function Game() {
           This player
         </button>
       </div>
-      {currentStatement && (
+      {currentComment && (
         <div className="flex m-8 flex-col items-center justify-center space-y-2">
           <ul style={statementBox}>
             <lh>Statement:</lh>
             <li style={statementContainer}>
               {" "}
-              <p style={statementStyle}>{currentStatement.text}</p>
+              <p style={statementStyle}>{currentComment.text}</p>
               <div className="flex m-8 items-center justify-center">
                 <button className="m-1" value="yes" onClick={handleVote}>
                   Yes
@@ -327,16 +327,16 @@ export function Game() {
           </ul>
         </div>
       )}
-      {!currentStatement && (
+      {!currentComment && (
         <h1>
-          You have voted on all statements, please wait for more or add your own
+          You have voted on all comments, please wait for more or add your own
         </h1>
       )}
-      {/* old method of displaying all statements in reverse chronological order //
-        {statements && (
+      {/* old method of displaying all comments in reverse chronological order //
+        {comments && (
           <ul style={statementBox}>
             <lh>Comments</lh>
-            {statements
+            {comments
               .sort((a, b) => b.timeStamp - a.timeStamp)
               .map((statement, index) => (
                 <li style={statementContainer} key={index}>
@@ -352,7 +352,7 @@ export function Game() {
           </ul>
         )} */}
 
-      <StatementSubmit />
+      <CommentSubmit />
       <div>
         <ul>
           <lh>

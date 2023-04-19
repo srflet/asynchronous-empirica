@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import { useStageTimer } from "@empirica/core/player/classic/react"
-import { Timer } from "./Timer"
 
 export function EndDateBox() {
   const timer = useStageTimer()

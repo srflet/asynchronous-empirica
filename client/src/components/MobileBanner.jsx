@@ -38,9 +38,9 @@ export function MobileBanner({
         Vote/Comment
       </button>
       <button
-        value="statements"
+        value="comments"
         className={`p-x-2 p-y-1 rounded ${
-          view === "statements"
+          view === "comments"
             ? "bg-gray-300 shadow shadow-gray-500 text-black"
             : "hover:bg-gray-700 bg-gray-800 text-white"
         }`}

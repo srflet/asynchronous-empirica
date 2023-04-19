@@ -6,13 +6,13 @@ import {
 } from "@empirica/core/player/classic/react"
 import React, { useState, useEffect } from "react"
 import { Timer } from "./components/Timer"
-import { StatementSubmit } from "./components/StatementSubmit"
+import { CommentSubmit } from "./components/CommentSubmit"
 import { EstimatePage } from "./components/EstimatePage"
 import { IntroVotePage } from "./components/IntroVotePage"
 import { GameScreen } from "./GameScreen"
 import { GameScreenMobile } from "./GameScreenMobile"
 import { Loading } from "@empirica/core/player/react"
-import { IntroStatementSubmitPage } from "./components/IntroStatementSubmitPage"
+import { IntroCommentSubmitPage } from "./components/IntroCommentSubmitPage"
 import { EmailInput } from "./components/EmailInput"
 import { Overlay } from "./components/Overlay"
 
@@ -30,11 +30,11 @@ export function GameSimple() {
   const [emailMatch, setEmailMatch] = useState(true)
   const [questionView, setQuestionView] = useState(undefined)
 
-  const [currentStatement, setCurrentStatement] = useState({})
+  const [currentComment, setCurrentComment] = useState({})
   const [voted, setVoted] = useState(true)
 
-  const statements = game ? game.get("statements") : {}
-  const seenStatements = player ? player.get("seenStatements") : {}
+  const comments = game ? game.get("comments") : {}
+  const seenComments = player ? player.get("seenComments") : {}
   const [showOverlay, setShowOverlay] = useState(false)
 
   function handleSubmit(event) {
@@ -59,7 +59,7 @@ export function GameSimple() {
       console.log("email check")
 
       player.set("introIndex", 0)
-      player.set("gameStage", "introEstimate") //player.set("gameStage", "introEstimate")
+      player.set("gameStage", "game") //player.set("gameStage", "introEstimate")
       player.set("nickname", nickname)
 
       // player.set("join", true) for OLD version where they click join button
@@ -124,25 +124,25 @@ export function GameSimple() {
       return
     }
 
-    console.log(player.get("seenStatements"))
+    console.log(player.get("seenComments"))
 
-    const seenStatementIds = player
-      .get("seenStatements")
-      [`${questionView}`].map((_statement) => _statement.id)
+    const seenCommentIds = player
+      .get("seenComments")
+      [`${questionView}`].map((_comment) => _comment.id)
 
-    console.log(seenStatementIds)
+    console.log(seenCommentIds)
 
-    const statementsToVote = statements[`${questionView}`].filter(
-      (_statement) => !seenStatementIds.includes(_statement.id)
+    const commentsToVote = comments[`${questionView}`].filter(
+      (_comment) => !seenCommentIds.includes(_comment.id)
     )
-    if (!statementsToVote) {
-      setCurrentStatement({})
+    if (!commentsToVote) {
+      setCurrentComment({})
       return
     }
 
-    if (!currentStatement) {
-      setCurrentStatement(
-        statementsToVote[Math.floor(Math.random() * statementsToVote.length)]
+    if (!currentComment) {
+      setCurrentComment(
+        commentsToVote[Math.floor(Math.random() * commentsToVote.length)]
       )
       setVoted(false)
 
@@ -150,14 +150,14 @@ export function GameSimple() {
     }
 
     if (voted) {
-      setCurrentStatement(
-        statementsToVote[Math.floor(Math.random() * statementsToVote.length)]
+      setCurrentComment(
+        commentsToVote[Math.floor(Math.random() * commentsToVote.length)]
       )
       setVoted(false)
 
       return
     }
-  }, [seenStatements, statements])
+  }, [seenComments, comments])
 
   if (!game) {
     return (
@@ -168,8 +168,6 @@ export function GameSimple() {
   }
 
   const treatment = game.get("treatment")
-  const question = treatment.question
-  const hasPreEstimate = player.get("preEstimate")
   const hasNickname = player.get("nickname")
 
   if (!hasNickname) {
@@ -211,29 +209,29 @@ export function GameSimple() {
     )
   }
 
-  if (player.get("gameStage") === "introEstimate") {
-    return (
-      <>
-        <EstimatePage />
-      </>
-    )
-  }
+  // if (player.get("gameStage") === "introEstimate") {
+  //   return (
+  //     <>
+  //       <EstimatePage />
+  //     </>
+  //   )
+  // }
 
-  if (player.get("gameStage") === "introVote") {
-    return (
-      <>
-        <IntroVotePage />
-      </>
-    )
-  }
+  // if (player.get("gameStage") === "introVote") {
+  //   return (
+  //     <>
+  //       <IntroVotePage />
+  //     </>
+  //   )
+  // }
 
-  if (player.get("gameStage") === "introStatementSubmit") {
-    return (
-      <>
-        <IntroStatementSubmitPage />
-      </>
-    )
-  }
+  // if (player.get("gameStage") === "introCommentSubmit") {
+  //   return (
+  //     <>
+  //       <IntroCommentSubmitPage />
+  //     </>
+  //   )
+  // }
 
   const isChat = treatment.communication === "chat"
   if (player.get("gameStage") === "game") {

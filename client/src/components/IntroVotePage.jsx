@@ -7,7 +7,7 @@ import {
 } from "@empirica/core/player/classic/react"
 import { Loading } from "@empirica/core/player/react"
 import { TextBox } from "./TextBox"
-import { StatementBox } from "./StatementBox"
+import { CommentBox } from "./CommentBox"
 
 export function IntroVotePage() {
   const game = useGame()
@@ -33,7 +33,7 @@ export function IntroVotePage() {
         <TextBox type="Instructions" index={index} />
       </div>
       <div className="h-300px w-400px self-center">
-        <StatementBox index={index} />
+        <CommentBox index={index} />
       </div>
     </div>
   )

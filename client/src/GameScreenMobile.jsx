@@ -3,9 +3,9 @@ import { CurrentEstimate } from "./components/CurrentEstimate"
 import { TextBox } from "./components/TextBox"
 import { EndDateBox } from "./components/EndDateBox"
 import { PlayerList } from "./components/PlayerList"
-import { StatementBox } from "./components/StatementBox"
-import { StatementSubmit } from "./components/StatementSubmit"
-import { StatementList } from "./components/StatementList"
+import { CommentBox } from "./components/CommentBox"
+import { CommentSubmit } from "./components/CommentSubmit"
+import { CommentList } from "./components/CommentList"
 import { Chat } from "./components/Chat"
 import { MobileBanner } from "./components/MobileBanner"
 import { InstructionsBox } from "./components/InstructionsBox"
@@ -18,7 +18,7 @@ export function GameScreenMobile({
   questionView,
   setQuestionView,
 }) {
-  const [view, setView] = useState("estimate") // can be estimate | vote | statements
+  const [view, setView] = useState("estimate") // can be estimate | vote | comments
 
   return (
     <div className="relative h-full w-full justify-center align-center">
@@ -49,14 +49,14 @@ export function GameScreenMobile({
 
         {view === "vote" && (
           <>
-            <StatementBox index={questionView} />
-            <StatementSubmit index={questionView} />
+            <CommentBox index={questionView} />
+            <CommentSubmit index={questionView} />
           </>
         )}
 
-        {view === "statements" && (
+        {view === "comments" && (
           <>
-            <StatementList index={questionView} />
+            <CommentList index={questionView} />
           </>
         )}
       </div>

@@ -35,7 +35,6 @@ export function EstimatePage() {
           <EstimateSubmit index={index} />
         </div>
       </div>
-      <button onClick={() => console.log(index)}>debug</button>
     </div>
   )
 }

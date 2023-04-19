@@ -21,7 +21,7 @@ export function PlayerList({ index }) {
     return accumulator
   }, [])
 
-  const allAnswers = players.reduce((accumulator, _player) => {
+  const otherAnswers = otherPlayers.reduce((accumulator, _player) => {
     if (_player.get("currentEstimate") !== undefined) {
       return [...accumulator, _player.get("currentEstimate")[`${index}`]]
     }
@@ -29,15 +29,15 @@ export function PlayerList({ index }) {
   }, [])
 
   const mean =
-    allAnswers.reduce(
+    otherAnswers.reduce(
       (accumulator, answer) => accumulator + parseInt(answer),
       0
-    ) / allAnswers.length
+    ) / otherAnswers.length
 
   return (
     <div className="h-full p-4 flex flex-col space-y-2 border border-solid rounded shadow">
       <h1>Other Players: </h1>
-      {allAnswers.length >= 1 && (
+      {otherAnswers.length >= 1 && (
         <div className="bg-white border border-black border-solid rounded flex flex-wrap p-6 justify-between">
           <p>Average:</p>
           <p>{mean}</p>
