@@ -13,7 +13,8 @@ export function MessageSubmit({ index }) {
   function handleChange(event) {
     setNewMessage({
       text: event.target.value,
-      sender: player.id,
+      author: player.id,
+      nickname: player.get("nickname") || "??",
       timeStamp: new Date().getTime(),
     })
   }

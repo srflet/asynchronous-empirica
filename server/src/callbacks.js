@@ -478,8 +478,16 @@ Empirica.onGameStart(({ game }) => {
   //   }
   // )
   console.log("game started")
+  const endDate = new Date(game.get("treatment").endDate)
+  const currentDate = new Date(endDate)
+  console.log(`endDate: ${endDate} | seconds: ${endDate.getTime()}`)
+  console.log(`currentDate: ${currentDate} | seconds: ${currentDate.getTime()}`)
+  const duration = Math.floor(
+    (currentDate.getTime() - new Date().getTime()) / 1000
+  )
+  console.log(`++++++++ duration of game: ${duration}++++++`)
   const round = game.addRound({ name: "Game" })
-  round.addStage({ name: "Conversation", duration: 604800 })
+  round.addStage({ name: "Conversation", duration: duration }) //604800
   const round2 = game.addRound({ name: "FinalEstimate" })
   round2.addStage({ name: "FinalEstimate", duration: 86400 })
 })

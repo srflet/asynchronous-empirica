@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@empirica/core": "1.0.0-rc.23",
+    "@empirica/core": "1.2.0",
     "marked": "^4.3.0",
     "marked-react": "^1.3.2",
     "react": "18.2.0",

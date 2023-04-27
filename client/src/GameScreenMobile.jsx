@@ -10,6 +10,7 @@ import { Chat } from "./components/Chat"
 import { MobileBanner } from "./components/MobileBanner"
 import { InstructionsBox } from "./components/InstructionsBox"
 import { Overlay } from "./components/Overlay"
+import { MedianBox } from "./components/MedianBox"
 
 export function GameScreenMobile({
   showOverlay,
@@ -23,7 +24,7 @@ export function GameScreenMobile({
   return (
     <div className="relative h-full w-full justify-center align-center">
       <div
-        className={`h-9/10 min-w-350px max-w-400px flex flex-col m-4 align-center space-y-4 ${
+        className={`h-9/10 min-w-320px max-w-350px overflow-auto flex flex-col m-4 align-center space-y-4 ${
           showOverlay && "opacity-20 pointer-events-none touch-none"
         }`}
       >
@@ -39,11 +40,8 @@ export function GameScreenMobile({
         {view === "estimate" && (
           <>
             <CurrentEstimate index={questionView} />
-            {isChat ? (
-              <Chat index={questionView} />
-            ) : (
-              <PlayerList index={questionView} />
-            )}
+            <MedianBox index={questionView} />
+            <Chat index={questionView} />
           </>
         )}
 

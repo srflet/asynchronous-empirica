@@ -100,6 +100,10 @@ export function GameSimple() {
         ([key, value]) => !nullParams.includes(key)
       )
     )
+    console.log(
+      "🚀 ~ file: GameSimple.jsx:103 ~ useEffect ~ filterParams:",
+      filterParams
+    )
 
     player.set("filterParams", filterParams)
 

@@ -66,8 +66,9 @@ export function CurrentEstimate({ index }) {
     return
   }
 
-  function handleClose() {
+  function handleClose(event) {
     setUpdating(!updating)
+    setEstimate(undefined)
   }
 
   return (
@@ -75,11 +76,11 @@ export function CurrentEstimate({ index }) {
       <h1>{updating ? "Update your estimate:" : "Current estimate:"}</h1>
       <div className="flex justify-between">
         {!updating && (
-          <div className="border w-3/5 rounded border-solid self-center flex justify-center">
-            <p
-              className="min-w-max max-w-max max-h-min text-center p-2 text-black hover:cursor-pointer hover:text-blue-500"
-              onClick={handleClick}
-            >
+          <div
+            className="border w-3/5 rounded border-solid self-center flex justify-center hover:bg-gray-300"
+            onClick={handleClick}
+          >
+            <p className="min-w-max max-w-max max-h-min text-center p-2 text-black">
               {player.get("currentEstimate")?.[`${index}`]
                 ? player.get("currentEstimate")?.[`${index}`]
                 : "[enter your estimate]"}
@@ -113,7 +114,7 @@ export function CurrentEstimate({ index }) {
             </button>
             <button
               className="h-40px px-2 bg-gray-500 hover:bg-gray-400 rounded border border-transparent rounded shadow-sm text-sm font-medium text-white"
-              onClick={handleClose}
+              onClick={(e) => handleClose(e)}
             >
               Cancel
             </button>

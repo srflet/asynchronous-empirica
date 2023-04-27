@@ -8,27 +8,27 @@ export function TextBox({ type, index = null }) {
   const timer = useStageTimer()
   const [endDate, setEndDate] = useState(undefined)
 
-  useEffect(() => {
-    if (!timer) {
-      return
-    }
-    let remaining = timer.remaining
+  // useEffect(() => {
+  //   if (!timer) {
+  //     return
+  //   }
+  //   let remaining = timer.remaining
 
-    // if (timer?.remaining || timer?.remaining === 0) {
-    //   remaining = Math.round(timer?.remaining / 1000);
-    // }
+  //   // if (timer?.remaining || timer?.remaining === 0) {
+  //   //   remaining = Math.round(timer?.remaining / 1000);
+  //   // }
 
-    const nowSeconds = new Date().getTime()
-    const nowDate = new Date(nowSeconds)
-    const future = nowSeconds + remaining
+  //   const nowSeconds = new Date().getTime()
+  //   const nowDate = new Date(nowSeconds)
+  //   const future = nowSeconds + remaining
 
-    const eDate = new Date(future)
-    setEndDate(eDate)
-  }, [])
+  //   const eDate = new Date(future)
+  //   setEndDate(eDate)
+  // }, [])
 
-  if (!timer || !endDate) {
-    return "Loading..."
-  }
+  // if (!timer || !endDate) {
+  //   return "Loading... no timer or end date"
+  // }
   function handleShowMore(event) {
     event.preventDefault()
     event.stopPropagation()
@@ -37,7 +37,7 @@ export function TextBox({ type, index = null }) {
   }
 
   if (!game) {
-    return "Loading..."
+    return "Loading... no game"
   }
 
   let text = "This is filler text. To be replaced!"
@@ -74,7 +74,9 @@ export function TextBox({ type, index = null }) {
         </div>
         <div className="flex justify-between">
           <h1>End Date: </h1>
-          <p className="self-center">{endDate.toLocaleDateString()}</p>
+          <p className="self-center">
+            {new Date(game.get("treatment").endDate).toLocaleString()}
+          </p>
         </div>
       </div>
     </>

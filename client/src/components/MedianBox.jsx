@@ -40,7 +40,22 @@ export function MedianBox({ index }) {
     return "Loading..."
   }
 
-  const isLocked = player.get("currentEstimate")[`${index}`] === undefined
+  const comments = game.get("comments")[`${index}`]
+  const myComments = comments.filter(
+    (_comment) => _comment.author === player.id
+  )
+
+  const myVotedComments = player.get("seenComments")[`${index}`]
+
+  const requiredVotes = game.get("treatment").numberPreVotes
+  const requiredComments = game.get("treatment").numberPreComments
+
+  const currentEstimate = player.get("currentEstimate")?.[`${index}`]
+
+  const isLocked =
+    (myComments.length < requiredComments) |
+    (myVotedComments.length < requiredVotes) |
+    (currentEstimate === undefined)
 
   const otherPlayers = players.reduce((accumulator, _player) => {
     if (
@@ -62,9 +77,6 @@ export function MedianBox({ index }) {
     }
     return accumulator
   }, [])
-
-  const requiredVotes = game.get("treatment").numberPreVotes
-  const requiredComments = game.get("treatment").numberPreComments
 
   return (
     <div className="h-full p-4 flex flex-col space-y-2 border border-solid rounded shadow">
