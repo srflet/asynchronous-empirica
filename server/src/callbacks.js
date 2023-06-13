@@ -312,8 +312,6 @@ Empirica.on("player", "join", function (ctx, { player }) {
     .filter(function (_game) {
       const curentPlayerCount = _game.players.length || 0
       return (
-        _game.get("treatment").question ===
-          selectedTreatment.treatment.question &&
         curentPlayerCount < selectedTreatment.treatment.playerCount
       )
     })
@@ -329,9 +327,9 @@ Empirica.on("player", "join", function (ctx, { player }) {
       ? availableGames[0]
       : availableGames[Math.floor(Math.random() * availableGames.length)]
 
-  // console.log(`number of games available is: ${availableGames.length}`)
+  console.log(`number of games available is: ${availableGames.length}`)
 
-  // console.log(game)
+  console.log(game)
   if (game) {
     console.log("game found")
     player.set("join", false)
@@ -365,24 +363,32 @@ Empirica.on("player", "join", function (ctx, { player }) {
   console.log(selectedTreatment.treatment.prePopulatedComments)
   console.log(`***********************************\n`)
 
-  const prePopulatedComments = selectedTreatment.treatment.prePopulatedComments
-    .split("##")
-    .reduce((accumulator, _comments, index) => {
-      return {
-        ...accumulator,
-        [index]: _comments.split("%%").map((_comment, subIndex) => {
-          return {
-            id: `prePopulate_${subIndex}`,
-            text: _comment,
-            timeStamp: null,
-            author: "prePopulated",
-            agree: 0,
-            disagree: 0,
-            uncertain: 0,
-          }
-        }),
-      }
-    }, {})
+  let prePopulatedComments = selectedTreatment.treatment.prePopulatedComments
+  if (
+    typeof prePopulatedComments === "string" ||
+    prePopulatedComments instanceof String
+  ) {
+    prePopulatedComments = prePopulatedComments
+      .split("##")
+      .reduce((accumulator, _comments, index) => {
+        return {
+          ...accumulator,
+          [index]: _comments.split("%%").map((_comment, subIndex) => {
+            return {
+              id: `prePopulate_${subIndex}`,
+              text: _comment,
+              timeStamp: null,
+              author: "prePopulated",
+              agree: 0,
+              disagree: 0,
+              uncertain: 0,
+            }
+          }),
+        }
+      }, {})
+
+    selectedTreatment.treatment["prePopulatedComments"] = prePopulatedComments
+  }
 
   // console.log("prepopulated comments array: ", prePopulatedComments)
 
@@ -391,20 +397,19 @@ Empirica.on("player", "join", function (ctx, { player }) {
   // })
 
   // console.log(prePopulatedComments["0"])
-
-  const questionsArray = selectedTreatment.treatment.questions
-    .split("%%")
-    .map((_questionInfo) => {
+  let questionsArray = selectedTreatment.treatment.questions
+  if (typeof questionsArray === "string" || questionsArray instanceof String) {
+    questionsArray = questionsArray.split("%%").map((_questionInfo) => {
       const _questionSplit = _questionInfo.split("&&")
       return {
         question: _questionSplit[0],
         moreDetails: _questionSplit[1],
       }
     })
+    selectedTreatment.treatment["questions"] = questionsArray
+  }
 
   // console.log("----- Selected treatment with questions array ------")
-  selectedTreatment.treatment["questions"] = questionsArray
-  selectedTreatment.treatment["prePopulatedComments"] = prePopulatedComments
   // console.log(selectedTreatment)
 
   batch.addGame({
@@ -415,6 +420,9 @@ Empirica.on("player", "join", function (ctx, { player }) {
   })
   console.log("game added")
   player.set("join", true)
+  // setTimeout(() => {
+  //   player.set("join", true)
+  // }, 1000)
 })
 
 // OLD CODE FROM NICOLAS - was breaking games by assisgning too many players!!!!
@@ -502,6 +510,22 @@ Empirica.onRoundStart(({ round }) => {
   //   console.log(_player.Identifier)
   // })
 })
+
+// Empirica.on("game", "checkMessages", function (ctx, { game }) {
+//   if (!game.get("checkMessages")) {
+//     return
+//   }
+//   console.log("checking messages")
+//   game.set("checkMessages", false)
+//   const index = game.get("checkMessages")
+//   const players = game.players
+//   players.forEach((_player) => {
+//     console.log(
+//       _player.get("nickname"),
+//       _player.get("lastSeenMessages")[`${index}`]
+//     )
+//   })
+// })
 
 Empirica.onStageStart(({ stage }) => {})
 

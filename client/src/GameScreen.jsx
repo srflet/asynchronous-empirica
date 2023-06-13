@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { CurrentEstimate } from "./components/CurrentEstimate"
 import { TextBox } from "./components/TextBox"
 import { EndDateBox } from "./components/EndDateBox"
@@ -11,6 +11,7 @@ import { InfoIcon } from "./components/SvgIcon"
 import { InstructionsBox } from "./components/InstructionsBox"
 import { Overlay } from "./components/Overlay"
 import { MedianBox } from "./components/MedianBox"
+import { ScrollButton } from "./components/ScrollButton"
 
 export function GameScreen({
   showOverlay,
@@ -19,6 +20,27 @@ export function GameScreen({
   questionView,
   setQuestionView,
 }) {
+  const [hasScrolled, setHasScrolled] = useState(false)
+
+  const scrollRef = useRef(null)
+
+  const scrollToTop = () => {
+    scrollRef.current.scroll({
+      top: 0,
+      behavior: "smooth",
+    })
+  }
+
+  const handleScroll = () => {
+    scrollRef.current.scrollTop === 0
+      ? setHasScrolled(false)
+      : setHasScrolled(true)
+  }
+
+  const handleScrollDebug = () => {
+    console.log(scrollRef.current.scrollTop)
+  }
+
   isChat = true
   return (
     <div className="relative h-full w-full justify-center align-center">
@@ -40,7 +62,18 @@ export function GameScreen({
             <PlayerList index={questionView} />
           )}
         </div>
-        <div className="col-start-4 col-span-5 space-y-4 row-start-1 row-span-15 overflow-auto">
+        <div
+          className="col-start-4 col-span-5 space-y-4 row-start-1 row-span-15 overflow-auto"
+          ref={scrollRef}
+          onScroll={handleScroll}
+        >
+          {/* <div ref={scrollToTopRef} /> */}
+
+          {hasScrolled && (
+            <div className="row-start-1 col-start-4 flex justify-center align-center">
+              <ScrollButton handleClick={scrollToTop} />
+            </div>
+          )}
           <div className="row-start-1 col-start-4 row-span-4 col-span-5">
             <CommentBox index={questionView} />
           </div>

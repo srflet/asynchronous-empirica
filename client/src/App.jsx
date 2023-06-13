@@ -29,7 +29,7 @@ export default function App() {
     <EmpiricaParticipant url={url} ns={playerKey} modeFunc={EmpiricaClassic}>
       <div className="h-screen relative">
         <EmpiricaMenu />
-        <div className="h-full overflow-auto">
+        <div className="h-full">
           <EmpiricaContext
             playerCreate={NewPlayer}
             unmanagedAssignment

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { CurrentEstimate } from "./components/CurrentEstimate"
 import { TextBox } from "./components/TextBox"
 import { EndDateBox } from "./components/EndDateBox"
@@ -19,12 +19,19 @@ export function GameScreenMobile({
   questionView,
   setQuestionView,
 }) {
-  const [view, setView] = useState("estimate") // can be estimate | vote | comments
+  const [view, setView] = useState("estimate") // Estimate | Comment | Social
+  const scrollToTopRef = useRef(null)
+
+  const scrollTop = () => {
+    scrollToTopRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  isChat = true
 
   return (
     <div className="relative h-full w-full justify-center align-center">
       <div
-        className={`h-9/10 min-w-320px max-w-350px overflow-auto flex flex-col m-4 align-center space-y-4 ${
+        className={`min-w-320px max-w-350px overflow-auto flex flex-col m-4 align-center space-y-4 ${
           showOverlay && "opacity-20 pointer-events-none touch-none"
         }`}
       >
@@ -34,27 +41,33 @@ export function GameScreenMobile({
           showOverlay={showOverlay}
           setShowOverlay={setShowOverlay}
           isMobile={true}
+          scrollToTop={scrollTop}
         />
-        <EndDateBox />
-        <TextBox type="Question" index={questionView} />
+        <div ref={scrollToTopRef} />
+        <br />
+        <br />
         {view === "estimate" && (
           <>
+            <TextBox type="Question" index={questionView} />
             <CurrentEstimate index={questionView} />
             <MedianBox index={questionView} />
-            <Chat index={questionView} />
           </>
         )}
-
-        {view === "vote" && (
+        {view === "comment" && (
           <>
             <CommentBox index={questionView} />
             <CommentSubmit index={questionView} />
+            <CommentList index={questionView} />
           </>
         )}
-
-        {view === "comments" && (
+        {view === "social" && isChat && (
           <>
-            <CommentList index={questionView} />
+            <Chat index={questionView} />
+          </>
+        )}
+        {view === "social" && !isChat && (
+          <>
+            <PlayerList index={questionView} />
           </>
         )}
       </div>

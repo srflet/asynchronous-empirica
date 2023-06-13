@@ -246,6 +246,7 @@ export function GameSimple() {
             isMobile={isMobile}
             questionView={questionView}
             setQuestionView={setQuestionView}
+            setShowOverlay={setShowOverlay}
           />
         ) : isMobile ? (
           <GameScreenMobile

@@ -30,25 +30,22 @@ export function CommentList({ index }) {
   if (isLocked) {
     return (
       <div className="h-full border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
-        <p>
-          <strong>
-            <em>
-              To unlock social features, enter an estimate{" "}
-              {myComments.length < requiredComments &&
-                `, enter ${
-                  requiredComments - myComments.length
-                } more comment(s)`}
-              {myComments.length < requiredComments &&
-                myVotedComments.length < requiredVotes &&
-                " and "}
-              {myVotedComments.length < requiredVotes &&
-                `, vote on ${
-                  requiredVotes - myVotedComments.length
-                } more comment(s)`}
-              .
-            </em>
-          </strong>
-        </p>
+        <ul>
+          <lh>To unlock social features:</lh>
+          {currentEstimate === undefined && <li>Enter an estimate</li>}
+          {myComments.length < requiredComments && (
+            <li>
+              Enter {requiredComments - myComments.length} more comment
+              {requiredComments - myComments.length > 1 && "s"}
+            </li>
+          )}
+          {myVotedComments.length < requiredVotes && (
+            <li>
+              Vote on {requiredVotes - myVotedComments.length} more comment
+              {requiredVotes - myVotedComments.length > 1 && "s"}
+            </li>
+          )}
+        </ul>
       </div>
     )
   }

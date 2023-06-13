@@ -36,8 +36,11 @@ export function MedianBox({ index }) {
     return sorted[middle]
   }
 
-  if (!game || !player || !players || !player.get("currentEstimate")) {
-    return "Loading..."
+  if (!game || !player || !players) {
+    console.log(players)
+    console.log(game)
+    console.log(player)
+    return "Loading issues..."
   }
 
   const comments = game.get("comments")[`${index}`]
@@ -84,13 +87,27 @@ export function MedianBox({ index }) {
       {isLocked ? (
         <div>
           <p>
-            <strong>
-              <em>
-                To unlock, enter an estimate, vote on {requiredVotes} comments,
-                and enter {requiredComments} comments.
-              </em>
-            </strong>
+            <strong>Unlock Social Features</strong>
           </p>
+          {/* <strong>
+              <ul>
+                <lh>:</lh>
+                {currentEstimate === undefined && <li>Enter and estimate</li>}
+                {myComments.length < requiredComments && (
+                  <li>
+                    Enter {requiredComments - myComments.length} more comment
+                    {requiredComments - myComments.length > 1 && "s"}
+                  </li>
+                )}
+                {myVotedComments.length < requiredVotes && (
+                  <li>
+                    Vote on {requiredVotes - myVotedComments.length} more
+                    comment
+                    {requiredVotes - myVotedComments.length > 1 && "s"}
+                  </li>
+                )}
+              </ul>
+            </strong> */}
         </div>
       ) : (
         answers.length >= 1 && (

@@ -1,5 +1,6 @@
 import React from "react"
 import { usePlayer } from "@empirica/core/player/classic/react"
+import { addBreaksToString } from "../../helperFunctions"
 
 export function Message({ text, author, nickname, timeStamp, successive }) {
   const player = usePlayer()
@@ -8,14 +9,21 @@ export function Message({ text, author, nickname, timeStamp, successive }) {
   }
 
   function handleClick() {
-    console.log(text, successive)
+    console.log(displayText, successive)
+    console.log(new Date(timeStamp))
   }
 
   const isSender = author === player.id
+  const messageDate = new Date(timeStamp)
+
+  let displayText = text
+  // if (displayText.length > 20) {
+  //   displayText = addBreaksToString(displayText, 20)
+  // }
 
   return (
     <div
-      className={`px-2 ${!successive && "py-1"} flex flex-col w-3/5 ${
+      className={`px-2 ${!successive && "py-1"} flex flex-col min-w-3/5 ${
         isSender ? "self-end" : "self-start"
       }`}
     >
@@ -23,15 +31,15 @@ export function Message({ text, author, nickname, timeStamp, successive }) {
         <p className="text-start mx-2 justify-self-start">{nickname}:</p>
       )}
       <div
-        className={`p-4 min-h-max w-full flex flex-col border rounded ${
-          isSender ? "bg-green-100 text-right" : "bg-blue-100 text-left"
+        className={`p-4 min-h-max max-w-180px flex flex-col border rounded text-left ${
+          isSender ? "bg-green-100" : "bg-blue-100"
         }`}
       >
-        <span onClick={handleClick} className="hyphens-auto">
-          {text}
+        <span onClick={handleClick} className="break-words h-auto">
+          {displayText}
         </span>
         <p className="text-sm text-gray-500 justify-self-end text-end">
-          {timeStamp}
+          {messageDate.toLocaleDateString()}: {messageDate.toLocaleTimeString()}
         </p>
       </div>
     </div>

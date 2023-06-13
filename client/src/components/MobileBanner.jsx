@@ -7,14 +7,16 @@ export function MobileBanner({
   showOverlay,
   setShowOverlay,
   isMobile,
+  scrollToTop,
 }) {
   function handleClick(event) {
     event.preventDefault()
     const target = event.target.value
     setView(target)
+    scrollToTop()
   }
   return (
-    <div className="w-full min-w-max justify-evenly flex flex-wrap  row-start-1 col-start-1 row-span-1 p-y-1 col-span-1 bg-gray-800 border border-solid rounded">
+    <div className="w-300px min-w-max justify-evenly fixed flex flex-wrap  row-start-1 col-start-1 row-span-1 p-y-1 col-span-1 bg-gray-800 border border-solid rounded">
       <button
         value="estimate"
         className={`p-x-2 p-y-1 rounded ${
@@ -27,9 +29,9 @@ export function MobileBanner({
         Other Estimates
       </button>
       <button
-        value="vote"
+        value="comment"
         className={`p-x-2 p-y-1 rounded ${
-          view === "vote"
+          view === "comment"
             ? "bg-gray-300 shadow shadow-gray-500 text-black"
             : "hover:bg-gray-600 bg-gray-800 text-white"
         }`}
@@ -38,15 +40,15 @@ export function MobileBanner({
         Vote/Comment
       </button>
       <button
-        value="comments"
+        value="social"
         className={`p-x-2 p-y-1 rounded ${
-          view === "comments"
+          view === "social"
             ? "bg-gray-300 shadow shadow-gray-500 text-black"
             : "hover:bg-gray-700 bg-gray-800 text-white"
         }`}
         onClick={handleClick}
       >
-        Vote Tally
+        Social
       </button>
       <InfoIcon
         showOverlay={showOverlay}

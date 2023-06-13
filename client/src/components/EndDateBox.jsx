@@ -37,8 +37,6 @@ export function EndDateBox() {
           {new Date(game.get("treatment").endDate).toLocaleString()}
         </p>
       </div>
-
-      <button onClick={() => console.log(timer.remaining)}>debug</button>
     </>
   )
 }

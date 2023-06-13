@@ -74,6 +74,7 @@ factors:
       desc: 'date time string. format: YYYY-MM-DDTHH:mm:ss.sssZ'
       values:
         - value: 2023-05-04T13:50:00
+        - value: 2023-06-20T13:50:00
 treatments:
     - name: Two Players
       desc: Two-player Game
@@ -139,14 +140,13 @@ treatments:
       factors:
         playerCount: 5
         question: sports
-    - name: econ 5
+    - name: 5 player
       factors:
         communication: chat
-        endDate: 2023-05-04T13:50:00
+        endDate: 2023-06-20T13:50:00
         numberPreComments: 2
         numberPreVotes: 3
         numgam: 5
         playerCount: 10
         prePopulatedComments: Sports Comment One%%Sports Comment Two%%Sports Comment Three%%Sports Comment Four%%Sports Comment Five%%Sports Comment Six%%Sports Comment Seven##Economics Comment One%%Economics Comment Two%%Economics Comment Three%%Economics Comment Four%%Economics Comment Five%%Economics Comment Six%%Economics Comment Seven##Politics Comment One%%Politics Comment Two%%Politics Comment Three%%Politics Comment Four%% Politics Comment Five%%Politics Comment Six%%Politics Comment Seven
-        question: economics
         questions: This is a question about sports? How are you?&&<h1 ><strong>Title Sports</strong><br /></h1><p><em>Message</em><br />This is a test string</p>%%This is a questions about economics? What's your favourite colour?&&<h1 ><strong>Title Econ</strong><br /></h1><p><em>Message</em><br />This is a test string</p>%%This is a question about politics? Is it raining today?&&<h1 ><strong>Title Politics</strong><br /></h1><p><em>Message</em><br />This is a test string</p>
