@@ -1,10 +1,10 @@
 import { ClassicListenersCollector } from "@empirica/core/admin/classic"
 export const Empirica = new ClassicListenersCollector()
-import { sendApiKey } from "./sensitive"
-const sendgrid = require("@sendgrid/mail")
+import { postmarkApiKey } from "./sensitive"
 var cron = require("node-cron")
 const nodemailer = require("nodemailer")
 const { google } = require("googleapis")
+const postmark = require("postmark")
 
 // function shuffle(array) {
 
@@ -17,29 +17,23 @@ function shuffleArray(array) {
   }
 }
 
-function sendEmail(text) {
-  console.log("iniside nodemailer send function")
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "s.fletcher.17.ucl@gmail.com",
-      pass: "fueFzAAu66rXsFj",
-    },
+function sendVerificationEmail(verificationCode, emailAddress) {
+  const client = new postmark.ServerClient(postmarkApiKey)
+  client.sendEmail({
+    From: "joshua.becker@ucl.ac.uk",
+    To: emailAddress,
+    Subject: "asynchronous empirica",
+    TextBody: `Your verification code is: ${verificationCode}`,
   })
+}
 
-  const mailOptions = {
-    from: "s.fletcher.17.ucl@gmail.com",
-    to: "s.fletcher.17@ucl.ac.uk",
-    subject: "Test Email",
-    text: `${text}`,
-  }
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error)
-    } else {
-      console.log("Email sent: " + info.response)
-    }
+function sendURLEmail(url, emailAddress) {
+  const client = new postmark.ServerClient(postmarkApiKey)
+  client.sendEmail({
+    From: "joshua.becker@ucl.ac.uk",
+    To: emailAddress,
+    Subject: "asynchronous empirica",
+    TextBody: `Your magic link is: ${url}. Please use this for future access.\n`,
   })
 }
 
@@ -148,6 +142,84 @@ Empirica.on("player", function (ctx, { player }) {
   // set player batch id
   // this is where we can check if the batch is full/max players
   // check if batch full/check if url wrong => send error message
+})
+
+Empirica.on("player", "sendVerification", function (ctx, { player }) {
+  console.log("!!!!!!!!!!!!! Sending verification email !!!!!!!!!!")
+  if (!player.get("sendVerification")) {
+    return
+  }
+
+  console.log(player.get("verifiedStatus"))
+
+  if (player.get("verifiedStatus") === true) {
+    return
+  }
+
+  const verificationCode = player.get("verificationCode")
+  const emailAddress = player.get("emailAddress")
+  console.log(emailAddress)
+  if (verificationCode === undefined || emailAddress === undefined) {
+    player.set("sendVerification", true)
+    return
+  }
+  sendVerificationEmail(verificationCode, emailAddress)
+  console.log({
+    From: "joshua.becker@ucl.ac.uk",
+    To: emailAddress,
+    Subject: "asynchronous empirica",
+    TextBody: `Your verification code is: ${verificationCode}`,
+  })
+  player.set("sendVerification", false)
+  return
+})
+
+Empirica.on("player", "sendMagicLink", function (ctx, { player }) {
+  console.log("!!!!!!!!!!!!! Sending magic link email !!!!!!!!!!")
+  if (!player.get("sendMagicLink")) {
+    return
+  }
+
+  const encryptedId = player.get("encryptedId")
+  console.log(encryptedId)
+  const url = `http://64.227.30.245:3000/?participantKey=${encryptedId}`
+  const emailAddress = player.get("emailAddress")
+  console.log(emailAddress)
+  if (url === undefined || emailAddress === undefined) {
+    player.set("sendMagicLink", true)
+    return
+  }
+  sendURLEmail(url, emailAddress)
+  console.log({
+    From: "joshua.becker@ucl.ac.uk",
+    To: emailAddress,
+    Subject: "asynchronous empirica",
+    TextBody: `Your magic link is: ${url}`,
+  })
+  player.set("sendMagicLink", false)
+  return
+})
+
+Empirica.on("player", "nickname", function (ctx, { player }) {
+  const nickname = player.get("nickname")
+  const game = player.currentGame
+
+  let gameMessages = game.get("messages")
+  game.get("treatment").questions.forEach((_treatment, index) => {
+    gameMessages[index] = [
+      ...gameMessages[index],
+      {
+        text: `${nickname} has joined the game`,
+        author: "system",
+        nickname: "",
+        timeStamp: new Date().getTime(),
+      },
+    ]
+  })
+
+  game.set("messages", gameMessages)
+
+  return
 })
 
 Empirica.on("player", "join", function (ctx, { player }) {
@@ -311,9 +383,7 @@ Empirica.on("player", "join", function (ctx, { player }) {
   const availableGames = batch.games
     .filter(function (_game) {
       const curentPlayerCount = _game.players.length || 0
-      return (
-        curentPlayerCount < selectedTreatment.treatment.playerCount
-      )
+      return curentPlayerCount < selectedTreatment.treatment.playerCount
     })
     .sort((a, b) => (a.timeStamp > b.timeStamp ? 1 : -1))
   // console.log(`Number of potential games: \n ${availableGames.length}`)
@@ -329,10 +399,18 @@ Empirica.on("player", "join", function (ctx, { player }) {
 
   console.log(`number of games available is: ${availableGames.length}`)
 
-  console.log(game)
   if (game) {
     console.log("game found")
     player.set("join", false)
+    if (game.get("messages") === undefined) {
+      const messagesObject = game
+        .get("treatment")
+        .questions.reduce((acc, _q) => {
+          return [...acc, []]
+        }, [])
+
+      game.set("messages", messagesObject)
+    }
     // console.log("Game here")
 
     // availableGames.forEach((_game) => {
@@ -344,7 +422,9 @@ Empirica.on("player", "join", function (ctx, { player }) {
     // console.log(game.get("timeStamp"))
 
     const oldIds = game.get("playersIds")
-    const newIds = oldIds.includes(player.id) ? oldIds : [player.id, ...oldIds]
+    const newIds = oldIds.includes(player.id)
+      ? oldIds
+      : [player.id, ...oldIds] || []
     // console.log(`old ids:${oldIds}`)
     // console.log(`new ids:${newIds}`)
     game.set("playersIds", newIds)

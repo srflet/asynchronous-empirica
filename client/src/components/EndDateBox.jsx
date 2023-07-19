@@ -4,7 +4,6 @@ import { Game } from "../Game"
 
 export function EndDateBox() {
   const timer = useStageTimer()
-  const [endDate, setEndDate] = useState(undefined)
   const game = useGame()
 
   // useEffect(() => {
@@ -29,12 +28,18 @@ export function EndDateBox() {
   //   return "Loading..."
   // }
 
+  const endDate = new Date(game.get("treatment").endDate)
+
   return (
     <>
       <div className="h-full w-full p-4 space-y-2 border border-solid rounded shadow flex flex-col justify-evenly">
         <h1>End Date: </h1>
         <p className="self-center">
-          {new Date(game.get("treatment").endDate).toLocaleString()}
+          {endDate.toLocaleDateString("en-US", {
+            month: "long",
+          })}{" "}
+          {endDate.getDate()} {endDate.getFullYear()}{" "}
+          {endDate.toLocaleTimeString()}
         </p>
       </div>
     </>

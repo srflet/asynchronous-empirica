@@ -4,42 +4,82 @@ import { Loading } from "@empirica/core/player/react"
 
 export function NewPlayer({ onPlayerID, connecting }) {
   const [playerID, setPlayerID] = useState("")
+  const [enterEmail, setEnterEmail] = useState(true)
+  const [tempEmail, setTempEmail] = useState("")
+  const [email, setEmail] = useState("")
+  const [partKeyId, setPartKeyId] = useState("")
+  const [participantKeyPresent, setParticipantKeyPresent] = useState(false)
+  const [isMturk, setIsMturk] = useState(false)
+
+  useEffect(() => {
+    const searchParams = new URL(document.location).searchParams
+    const MID = searchParams.get("MID")
+    const inviteCode = searchParams.get("inviteCode")
+    const participantKey = searchParams.get("participantKey")
+
+    if (participantKey) {
+      setParticipantKeyPresent(true)
+      return
+    }
+
+    if (!inviteCode) {
+      return
+    }
+
+    if (MID) {
+      setEnterEmail(false)
+      setIsMturk(true)
+    }
+
+    // if (enterEmail && email === "") {
+    //   return
+    // }
+
+    if (!isMturk && !email) {
+      return
+    }
+
+    const id = MID ? MID + "^" + inviteCode : email + "^" + inviteCode
+    const myCipher = cipher("JBLab")
+    const encyptedId = myCipher(id)
+    console.log(encyptedId)
+    setPartKeyId(encyptedId)
+    window.location = `http://64.227.30.245:3000/?participantKey=${encyptedId}`
+  }, [email])
 
   useEffect(() => {
     if (!onPlayerID || connecting) {
       return
     }
     const searchParams = new URL(document.location).searchParams
-    const id = searchParams.get("MID")
+    const participantKey = searchParams.get("participantKey")
 
-    if (!id) {
-      return
+    if (!participantKey) {
+      return // <Loading />
     }
 
-    onPlayerID(id)
-  }, [])
+    if (participantKey) {
+      onPlayerID(participantKey)
+      setParticipantKeyPresent(true)
+    }
+  }, [partKeyId])
 
   const handleSubmit = (evt) => {
     evt.preventDefault()
 
-    if (!playerID || playerID.trim() === "") {
-      return
-    }
-
-    onPlayerID(playerID)
+    setEnterEmail(false)
+    setEmail(tempEmail)
   }
 
-  return (
-    <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Enter your Player Identifier
-        </h2>
-      </div> */}
-      <p>New player creation form</p>
-      <Loading />
-      {/* <div className="loader"></div> */}
-      {/* <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+  if (enterEmail) {
+    return (
+      <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Please enter your email
+          </h2>
+        </div>
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form
             className="space-y-6"
             action="#"
@@ -52,7 +92,7 @@ export function NewPlayer({ onPlayerID, connecting }) {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Identifier
+                  Email
                 </label>
                 <div className="mt-1">
                   <input
@@ -63,15 +103,13 @@ export function NewPlayer({ onPlayerID, connecting }) {
                     required
                     autoFocus
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm"
-                    value={playerID}
-                    onChange={(e) => setPlayerID(e.target.value)}
+                    value={tempEmail}
+                    onChange={(e) => setTempEmail(e.target.value)}
                   />
                   <p
                     className="mt-2 text-sm text-gray-500"
                     id="playerID-description"
-                  >
-                    This should be given to you. E.g. email, code...
-                  </p>
+                  ></p>
                 </div>
               </div>
 
@@ -85,7 +123,55 @@ export function NewPlayer({ onPlayerID, connecting }) {
               </div>
             </fieldset>
           </form>
-        </div> */}
+        </div>
+      </div>
+    )
+  }
+
+  const baseURL = "64.227.30.245:3000"
+  return (
+    <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md"></div>
+      <div className="loader"></div>
+      <p>
+        {" "}
+        Please see your {isMturk ? "Mturk messages" : "emails"} to find your
+        personal link to log in. You may close this tab.
+      </p>
+      <button onClick={(e) => console.log(!enterEmail)}>DEBUG</button>
+      <button onClick={(e) => setEnterEmail(true)}>reset email</button>
+      <button
+        onClick={(e) => {
+          const myDecipher = decipher("JBLab")
+          console.log(myDecipher(partKeyId))
+        }}
+      >
+        decode partId
+      </button>
+      <p>{`${baseURL}/?participantKey=${partKeyId}`}</p>
     </div>
   )
+}
+
+const cipher = (salt) => {
+  const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0))
+  const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2)
+  const applySaltToChar = (code) =>
+    textToChars(salt).reduce((a, b) => a ^ b, code)
+
+  return (text) =>
+    text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("")
+}
+
+const decipher = (salt) => {
+  const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0))
+  const applySaltToChar = (code) =>
+    textToChars(salt).reduce((a, b) => a ^ b, code)
+  return (encoded) =>
+    encoded
+      .match(/.{1,2}/g)
+      .map((hex) => parseInt(hex, 16))
+      .map(applySaltToChar)
+      .map((charCode) => String.fromCharCode(charCode))
+      .join("")
 }

@@ -32,28 +32,38 @@ export function GameSimple() {
 
   const [currentComment, setCurrentComment] = useState({})
   const [voted, setVoted] = useState(true)
+  const [verified, setVerified] = useState(false)
+  const [code, setCode] = useState("")
 
   const comments = game ? game.get("comments") : {}
   const seenComments = player ? player.get("seenComments") : {}
   const [showOverlay, setShowOverlay] = useState(false)
 
+  function handleVerify(event) {
+    event.preventDefault()
+    if (!player) {
+      return
+    }
+
+    const verificationCode = player.get("verificationCode")
+    console.log(
+      verificationCode,
+      typeof verificationCode,
+      verificationCode.length
+    )
+    console.log(code, typeof code, code.length)
+    if (verificationCode.toString() !== code) {
+      player.set("verfifiedStatus", false)
+      return
+    }
+
+    player.set("verifiedStatus", true)
+    player.set("sendMagicLink", true)
+    player.set("join", true)
+  }
+
   function handleSubmit(event) {
     event.preventDefault()
-
-    // if (player.get("emailContact")) {
-    //   if ((email.trim().length === 0) | (emailConfirm.trim().length === 0)) {
-    //     return
-    //   }
-    //   if (email !== emailConfirm) {
-    //     setEmailMatch(false)
-    //     return
-    //   }
-    //   console.log(`email: ${email}`)
-    //   console.log(`emailConfirm: ${emailConfirm}`)
-    //   console.log(`Match: ${emailMatch}`)
-    //   player.set("email", email)
-    // }
-    // setEmailMatch(true)
 
     if (nickname) {
       console.log("email check")
@@ -64,6 +74,19 @@ export function GameSimple() {
 
       // player.set("join", true) for OLD version where they click join button
     }
+  }
+
+  const decipher = (salt) => {
+    const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0))
+    const applySaltToChar = (code) =>
+      textToChars(salt).reduce((a, b) => a ^ b, code)
+    return (encoded) =>
+      encoded
+        .match(/.{1,2}/g)
+        .map((hex) => parseInt(hex, 16))
+        .map(applySaltToChar)
+        .map((charCode) => String.fromCharCode(charCode))
+        .join("")
   }
 
   useEffect(() => {
@@ -81,31 +104,21 @@ export function GameSimple() {
       return
     }
     const searchParams = new URL(document.location).searchParams
-    let urlParams = {}
-    for (const [key, value] of searchParams) {
-      urlParams = {
-        ...urlParams,
-        [key]: key === "playerCount" ? parseInt(value) : value,
-      }
+    const participantKey = searchParams.get("participantKey")
+    const myDecipher = decipher("JBLab")
+    const emailAddress = myDecipher(participantKey).split("^")[0]
+    if (emailAddress.includes("@")) {
+      player.set("emailAddress", emailAddress)
     }
+    console.log(myDecipher(participantKey))
 
-    const emailContact = !("MID" in urlParams)
-    player.set("emailContact", emailContact)
-    console.log(`email contact: ${emailContact}`)
+    // const nullParams = ["participantKey", "MID"]
 
-    const nullParams = ["participantKey", "MID"]
-
-    const filterParams = Object.fromEntries(
-      Object.entries(urlParams).filter(
-        ([key, value]) => !nullParams.includes(key)
-      )
-    )
-    console.log(
-      "🚀 ~ file: GameSimple.jsx:103 ~ useEffect ~ filterParams:",
-      filterParams
-    )
-
-    player.set("filterParams", filterParams)
+    // const filterParams = Object.fromEntries(
+    //   Object.entries(urlParams).filter(
+    //     ([key, value]) => !nullParams.includes(key)
+    //   )
+    // )
 
     // player.set("filterKey", filterParams[0])
     // player.set("filterValue", filterParams[1])
@@ -115,8 +128,23 @@ export function GameSimple() {
     if (!player) {
       return
     }
+    if (player.get("emailAddress") === undefined) {
+      player.set("verifiedStatus", true)
+      return
+    }
+    if (player.get("verificationCode")) {
+      return
+    }
 
-    player.set("join", true)
+    const verificationCode = Math.floor(1000 + Math.random() * 9000)
+    const searchParams = new URL(document.location).searchParams
+    console.log(searchParams)
+    const encryptedId = searchParams.get("participantKey")
+    console.log(encryptedId)
+    player.set("encryptedId", encryptedId)
+    console.log(player.get("encryptedId"))
+    player.set("verificationCode", verificationCode)
+    player.set("sendVerification", true)
   }, [])
 
   useEffect(() => {
@@ -162,6 +190,35 @@ export function GameSimple() {
       return
     }
   }, [seenComments, comments])
+
+  if (!player.get("verifiedStatus")) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center">
+        <p>
+          Please check your emails for your verification code and enter below
+        </p>
+        <input
+          className="mb-5 appearance-none block px- py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm"
+          type="number"
+          id="inputEstimate"
+          value={code}
+          placeholder={`Enter your verification code`}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleClick(e)
+            }
+          }}
+          onChange={(e) => setCode(e.target.value)}
+        />
+        <button
+          className="h-30px px-1 bg-gray-500 hover:bg-gray-400 rounded border border-transparent rounded shadow-sm text-sm font-medium text-white"
+          onClick={handleVerify}
+        >
+          Submit
+        </button>
+      </div>
+    )
+  }
 
   if (!game) {
     return (

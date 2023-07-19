@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { usePlayer } from "@empirica/core/player/classic/react"
+import { EditIcon } from "./SvgIcon"
 
 export function CurrentEstimate({ index }) {
   const player = usePlayer()
@@ -72,12 +73,12 @@ export function CurrentEstimate({ index }) {
   }
 
   return (
-    <div className="border border-solid rounded shadow h-full p-4 space-y-2 flex flex-col">
+    <div className="border border-solid rounded shadow h-full p-2 space-y-1 flex flex-col">
       <h1>{updating ? "Update your estimate:" : "Current estimate:"}</h1>
       <div className="flex justify-between">
         {!updating && (
           <div
-            className="border w-3/5 rounded border-solid self-center flex justify-center hover:bg-gray-300"
+            className="border w-full rounded border-solid self-center flex justify-center hover:bg-gray-300"
             onClick={handleClick}
           >
             <p className="min-w-max max-w-max max-h-min text-center p-2 text-black">
@@ -85,13 +86,14 @@ export function CurrentEstimate({ index }) {
                 ? player.get("currentEstimate")?.[`${index}`]
                 : "[enter your estimate]"}
             </p>
+            <EditIcon />
           </div>
         )}
 
         {updating && (
           <>
             <input
-              className="mb-5 appearance-none block px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm"
+              className="mb-5 appearance-none block px- py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm"
               type="number"
               id="inputEstimate"
               value={estimate}
@@ -107,13 +109,13 @@ export function CurrentEstimate({ index }) {
               onChange={(e) => setEstimate(e.target.value)}
             />
             <button
-              className="h-40px px-2 bg-gray-500 hover:bg-gray-400 rounded border border-transparent rounded shadow-sm text-sm font-medium text-white"
+              className="h-30px px-1 bg-gray-500 hover:bg-gray-400 rounded border border-transparent rounded shadow-sm text-sm font-medium text-white"
               onClick={handleClick}
             >
               Submit
             </button>
             <button
-              className="h-40px px-2 bg-gray-500 hover:bg-gray-400 rounded border border-transparent rounded shadow-sm text-sm font-medium text-white"
+              className="h-30px px-2 bg-gray-500 hover:bg-gray-400 rounded border border-transparent rounded shadow-sm text-sm font-medium text-white"
               onClick={(e) => handleClose(e)}
             >
               Cancel

@@ -15,11 +15,24 @@ export function Message({ text, author, nickname, timeStamp, successive }) {
 
   const isSender = author === player.id
   const messageDate = new Date(timeStamp)
+  const isSystem = author === "system"
 
   let displayText = text
   // if (displayText.length > 20) {
   //   displayText = addBreaksToString(displayText, 20)
   // }
+
+  if (isSystem) {
+    return (
+      <div className="px-2 py-1 flex flex-col w-9/10 self-center">
+        <div className="p-4 min-h-max flex flex-col text-center text-gray-500">
+          <span onClick={handleClick} className="break-words h-auto">
+            {displayText}
+          </span>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -30,6 +43,7 @@ export function Message({ text, author, nickname, timeStamp, successive }) {
       {!successive && (
         <p className="text-start mx-2 justify-self-start">{nickname}:</p>
       )}
+
       <div
         className={`p-4 min-h-max max-w-180px flex flex-col border rounded text-left ${
           isSender ? "bg-green-100" : "bg-blue-100"

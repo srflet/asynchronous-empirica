@@ -71,8 +71,7 @@ export function ChatRoom({ index }) {
   const sortedMessages = messages
 
   function handleClick() {
-    const lastS = player.get("lastSeenMessages")
-    console.log(screen.width, screen.height)
+    console.log(game.get("messages"))
   }
 
   function handleCheck() {

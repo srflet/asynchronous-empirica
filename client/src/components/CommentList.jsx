@@ -18,6 +18,10 @@ export function CommentList({ index }) {
 
   const myVotedComments = player.get("seenComments")[`${index}`]
 
+  const myVotedIds = myVotedComments.reduce((acc, _comment) => {
+    return [...acc, _comment.id]
+  }, [])
+
   const requiredVotes = game.get("treatment").numberPreVotes
   const requiredComments = game.get("treatment").numberPreComments
   const currentEstimate = player.get("currentEstimate")?.[`${index}`]
@@ -52,17 +56,19 @@ export function CommentList({ index }) {
   return (
     <div className="h-full border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
       <h1 className="m-b-2">Community Votes: </h1>
-      {comments.map((_s, _index) => (
-        <CommentCard
-          key={_index}
-          comment={_s.text}
-          agree={_s.agree}
-          uncertain={_s.uncertain}
-          disagree={_s.disagree}
-          commentId={_s.id}
-          index={index}
-        />
-      ))}
+      {comments
+        .filter((_c) => myVotedIds.includes(_c.id))
+        .map((_s, _index) => (
+          <CommentCard
+            key={_index}
+            comment={_s.text}
+            agree={_s.agree}
+            uncertain={_s.uncertain}
+            disagree={_s.disagree}
+            commentId={_s.id}
+            index={index}
+          />
+        ))}
     </div>
   )
 }

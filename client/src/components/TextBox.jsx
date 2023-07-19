@@ -6,7 +6,6 @@ export function TextBox({ type, index = null }) {
   const game = useGame()
   const [showMore, setShowMore] = useState(false)
   const timer = useStageTimer()
-  const [endDate, setEndDate] = useState(undefined)
 
   // useEffect(() => {
   //   if (!timer) {
@@ -57,6 +56,8 @@ export function TextBox({ type, index = null }) {
   text = question.question
   const html = question.moreDetails
 
+  const endDate = new Date(game.get("treatment").endDate)
+
   return (
     <>
       <div className="min-h-max w-auto p-8 space-y-10 border border-solid rounded shadow flex flex-col">
@@ -75,7 +76,11 @@ export function TextBox({ type, index = null }) {
         <div className="flex justify-between">
           <h1>End Date: </h1>
           <p className="self-center">
-            {new Date(game.get("treatment").endDate).toLocaleString()}
+            {endDate.toLocaleDateString("en-US", {
+              month: "long",
+            })}{" "}
+            {endDate.getDate()} {endDate.getFullYear()}{" "}
+            {endDate.toLocaleTimeString()}
           </p>
         </div>
       </div>

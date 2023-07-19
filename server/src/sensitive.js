@@ -17,3 +17,5 @@ export const gmailCreds = {
       "ya29.a0AVvZVsot5dgBtfYjSmqge9ef88tLhzexG4ThOaF3egOxERlw-2Tv4za_ERn2p9KpgYPLW8fiZVodFmcjv2GzEQ7zJardU5r-xidc__XFRw4mSGxLh411faoEEzHyhD6RTmGqWJMYlkkDugsskFlLKGmncvGNaCgYKAVASARISFQGbdwaIKraVWgBcGucXeruJgzA--Q0163",
   },
 }
+
+export const postmarkApiKey = "9daf7b70-8388-4665-9b76-9ad4a4db30e2"
