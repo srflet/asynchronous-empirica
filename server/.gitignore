@@ -2,4 +2,4 @@ trigger
 node_modules
 modd.conf
 
-./src/sensitive.js
+/src/sensitive.js
