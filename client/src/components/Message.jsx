@@ -36,7 +36,7 @@ export function Message({ text, author, nickname, timeStamp, successive }) {
 
   return (
     <div
-      className={`px-2 ${!successive && "py-1"} flex flex-col min-w-3/5 ${
+      className={`px-2 ${!successive && "py-1"} flex flex-col min-w-3/4 ${
         isSender ? "self-end" : "self-start"
       }`}
     >
@@ -45,14 +45,19 @@ export function Message({ text, author, nickname, timeStamp, successive }) {
       )}
 
       <div
-        className={`p-4 min-h-max max-w-180px flex flex-col border rounded text-left ${
+        className={`p-4 min-h-max w-full flex flex-col border rounded text-left ${
           isSender ? "bg-green-100" : "bg-blue-100"
         }`}
       >
-        <span onClick={handleClick} className="break-words h-auto">
+        <span
+          onClick={handleClick}
+          className={`break-words h-auto ${
+            isSender ? "self-end" : "self-start"
+          }`}
+        >
           {displayText}
         </span>
-        <p className="text-sm text-gray-500 justify-self-end text-end">
+        <p className="text-sm text-gray-500 justify-self-end self-end">
           {messageDate.toLocaleDateString()}: {messageDate.toLocaleTimeString()}
         </p>
       </div>

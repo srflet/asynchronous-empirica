@@ -76,7 +76,7 @@ factors:
       - value: 2023-05-04T13:50:00
       - value: 2025-06-20T13:50:00
 treatments:
-  - name: 5 player
+  - name: 10 player
     factors:
       communication: chat
       endDate: 2025-06-20T13:50:00

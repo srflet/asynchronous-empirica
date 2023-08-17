@@ -12,6 +12,7 @@ import { InstructionsBox } from "./components/InstructionsBox"
 import { Overlay } from "./components/Overlay"
 import { MedianBox } from "./components/MedianBox"
 import { ScrollButton } from "./components/ScrollButton"
+import { usePlayer } from "@empirica/core/player/classic/react"
 
 export function GameScreen({
   showOverlay,
@@ -20,6 +21,7 @@ export function GameScreen({
   questionView,
   setQuestionView,
 }) {
+  const player = usePlayer()
   const [hasScrolled, setHasScrolled] = useState(false)
 
   const scrollRef = useRef(null)
@@ -39,6 +41,14 @@ export function GameScreen({
 
   const handleScrollDebug = () => {
     console.log(scrollRef.current.scrollTop)
+  }
+
+  if (!player) {
+    return (
+      <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <Loading />
+      </div>
+    )
   }
 
   isChat = true
@@ -84,8 +94,12 @@ export function GameScreen({
             <CommentList index={questionView} />
           </div>
         </div>
-        <div className="row-start-1 col-start-9 row-span-1 col-span-3 flex flex-wrap items-center justify-center">
-          <InfoIcon showOverlay={showOverlay} setShowOverlay={setShowOverlay} />
+        <div className="row-start-1 col-start-9 row-span-1 col-span-3 flex">
+          <InfoIcon
+            showOverlay={showOverlay}
+            setShowOverlay={setShowOverlay}
+            username={player.get("nickname")}
+          />
         </div>
         <div className="row-start-2 col-start-9 row-span-13 col-span-3">
           <TextBox type="Question" index={questionView} />

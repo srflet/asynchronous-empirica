@@ -1,6 +1,6 @@
 import React from "react"
 
-export function InfoIcon({ showOverlay, setShowOverlay, isMobile }) {
+export function InfoIcon({ showOverlay, setShowOverlay, isMobile, username }) {
   function handleClick() {
     setShowOverlay(!showOverlay)
   }
@@ -25,12 +25,14 @@ export function InfoIcon({ showOverlay, setShowOverlay, isMobile }) {
   }
   return (
     <div
-      className="h-full w-4/5 border rounded-2xl bg-gray-200 hover:bg-gray-100 hover:border-solid hover-shadow flex justify-evenly align-center hover:cursor-pointer"
+      className="h-full w-full border rounded-2xl bg-gray-200 hover:bg-gray-100 hover:border-solid hover-shadow flex align-center hover:cursor-pointer"
       onClick={handleClick}
     >
-      <p className="text-center self-center">More Questions</p>
+      <p className="ml-4 text-center self-center">
+        {username} | More Questions
+      </p>
       <svg
-        className="m-1 h-30px w-30px bg-gray-300 rounded-3xl fill-black"
+        className="m-1 ml-1/2 h-30px self-end w-30px bg-gray-300 rounded-4xl fill-black"
         clip-rule="evenodd"
         fill-rule="evenodd"
         stroke-linejoin="round"
@@ -115,6 +117,24 @@ export function EditIcon() {
 			c2.518,2.51,3.905,5.855,3.905,9.414C470.516,51.036,469.127,54.38,466.61,56.897z"
             />
           </g>
+        </g>
+      </svg>
+    </div>
+  )
+}
+
+export function SendIcon() {
+  return (
+    <div className="flex m-x-1 self-center align-center">
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g>
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" />
         </g>
       </svg>
     </div>

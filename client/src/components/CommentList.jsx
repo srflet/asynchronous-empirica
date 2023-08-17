@@ -31,6 +31,11 @@ export function CommentList({ index }) {
     (myVotedComments.length < requiredVotes) |
     (currentEstimate === undefined)
 
+  function handleCheck() {
+    console.log(game.get("comments"))
+    console.log(player.get("seenComments"))
+  }
+
   if (isLocked) {
     return (
       <div className="h-full border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
@@ -55,7 +60,9 @@ export function CommentList({ index }) {
   }
   return (
     <div className="h-full border border-solid rounded shadow p-4 overflow-x-hidden flex flex-col space-y-2">
-      <h1 className="m-b-2">Community Votes: </h1>
+      <h1 className="m-b-2" onClick={(e) => handleCheck()}>
+        Community Votes:{" "}
+      </h1>
       {comments
         .filter((_c) => myVotedIds.includes(_c.id))
         .map((_s, _index) => (

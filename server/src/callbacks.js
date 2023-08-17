@@ -37,6 +37,18 @@ function sendURLEmail(url, emailAddress) {
   })
 }
 
+function sendUpdateEmail(url, emailAddress, emailBody, username, hasUpdates) {
+  const client = new postmark.ServerClient(postmarkApiKey)
+  client.sendEmail({
+    From: "joshua.becker@ucl.ac.uk",
+    To: emailAddress,
+    Subject: hasUpdates
+      ? `${username} your forecasting portal has updates!`
+      : `${username}, update your forecasting portal!`,
+    TextBody: `${emailBody}`,
+  })
+}
+
 async function sendGmail(text) {
   // Replace the placeholders with your own values
   const CLIENT_ID =
@@ -137,11 +149,20 @@ async function sendGmail(text) {
 // })
 
 Empirica.on("player", function (ctx, { player }) {
-  // console.log("****Player was called here*******")
-  // add batch selection logic here
-  // set player batch id
-  // this is where we can check if the batch is full/max players
-  // check if batch full/check if url wrong => send error message
+  // console.log("!!!!!!!! FIRING ON PLAYER !!!!!!!!!")
+  // const game = player.currentGame
+  // const players = game.players
+  // if (!game || !players) {
+  //   return
+  // }
+  // const otherEstimates = players.reduce((acc, _player) => {
+  //   if (_player.id === player.id) {
+  //     return { ...acc }
+  //   }
+  //   return { ...acc, [_player.id]: _player.get("currentEstimate") || undefined }
+  // }, {})
+  // console.log(`other estimates: ${otherEstimates}`)
+  // player.set("otherPlayerEstimates", otherEstimates)
 })
 
 Empirica.on("player", "sendVerification", function (ctx, { player }) {
@@ -546,25 +567,104 @@ Empirica.on("player", "gameID", function (ctx, { player }) {
 })
 
 Empirica.onGameStart(({ game }) => {
-  // cron.schedule(
-  //   "30 13 * * *",
-  //   () => {
-  //     if (!game) {
-  //       return
-  //     }
+  cron.schedule(
+    "* * * * *", // <-- running every minute "30 13 * * *", running at exactly 13:30
+    () => {
+      if (!game) {
+        return
+      }
 
-  //     game.players.forEach((_player) => {
-  //       const nickname = _player.get("nickname")
-  //       const time = new Date()
+      checkForUnreadMessages(game)
+      checkForUnseenComments(game)
+      checkMedianChange(game)
 
-  //       sendGmail((text = `Hi player: ${nickname}.\n The time is ${time}`))
-  //     })
-  //   },
-  //   {
-  //     scheduled: true,
-  //     timezone: "Europe/London",
-  //   }
-  // )
+      game.players.forEach((_player) => {
+        const unreadArray = _player.get("hasUnreadMessages")
+        // unreadArray.forEach((question, index) => {
+        //   if (question) {
+        //     console.log(
+        //       `${_player.get(
+        //         "nickname"
+        //       )} you have unread messages from question ${index + 1}`
+        //     )
+        //   }
+        // })
+
+        const unseenComments = _player.get("unseenComments")
+        const medianDifferent = _player.get("medianDifferent")
+
+        console.log(`Median array: ${medianDifferent}`)
+        console.log(`Comments array: ${unseenComments}`)
+        console.log(`Messages array: ${unreadArray}`)
+
+        const medianUpdateText = medianDifferent.reduce((acc, _diff, index) => {
+          if (_diff) {
+            return `${acc} \n - Your community has updated their estimates for question ${
+              index + 1
+            }`
+          }
+
+          return `${acc}`
+        }, "")
+
+        const chatUpdateText = unreadArray.reduce((acc, _number, index) => {
+          if (_number > 0) {
+            return `${acc}\n - ${_number} new messages in Question ${index + 1}`
+          }
+
+          return `${acc}`
+        }, "")
+
+        const commentsUpdateText = unseenComments.reduce(
+          (acc, _number, index) => {
+            if (_number > 0) {
+              return `${acc}\n - ${_number} new comments in Question ${
+                index + 1
+              }`
+            }
+
+            return `${acc}`
+          },
+          ""
+        )
+
+        const updates =
+          chatUpdateText.length +
+            commentsUpdateText.length +
+            medianUpdateText.length >
+          0
+
+        const encryptedId = _player.get("encryptedId")
+        const username = _player.get("nickname")
+        console.log(encryptedId)
+        const url = `http://64.227.30.245:3000/?participantKey=${encryptedId}`
+        const emailAddress = _player.get("emailAddress")
+        console.log(emailAddress)
+        if (url === undefined || emailAddress === undefined) {
+          return
+        }
+
+        if (updates) {
+          const updateBody = `Hey ${username},\nYour forecasting portal has updates! Please click your magic link below to see the following: ${chatUpdateText} ${commentsUpdateText} ${medianUpdateText}\n Use this magic link to access your forecasting portal:\n ${url}`
+
+          console.log(`update body: ${updateBody}`)
+
+          sendUpdateEmail(url, emailAddress, updateBody, username, updates)
+
+          return
+        }
+
+        const emailBody = `Hey ${username},\nThings are a little slow around the office today, there are no updates to your forecasting portal!  Help to spark discussion by adding some new comments, or connecting with your fellow forecasters in the chatroom.\nAccess your forecasting portal any time using this magic link:\n${url}`
+
+        console.log(`email body: ${emailBody}`)
+        sendUpdateEmail(url, emailAddress, emailBody, username, updates)
+      })
+    },
+    {
+      scheduled: true,
+      timezone: "Europe/London",
+    }
+  )
   console.log("game started")
   const endDate = new Date(game.get("treatment").endDate)
   const currentDate = new Date(endDate)
@@ -614,3 +714,161 @@ Empirica.onStageEnded(({ stage }) => {})
 Empirica.onRoundEnded(({ round }) => {})
 
 Empirica.onGameEnded(({ game }) => {})
+
+function checkForUnreadMessages(game) {
+  const indexes = game.get("treatment").questions.reduce((acc, _q, index) => {
+    return [...acc, index]
+  }, [])
+
+  game.players.forEach((_player) => {
+    const _lastSeenObj = _player.get("lastSeenMessages")
+    const gameMessages = game.get("messages")
+    // console.log("game messages", gameMessages)
+    // console.log(_player.get("nickname"), _lastSeenObj)
+    const unreadObj = indexes.reduce((_acc, idx) => {
+      const _lastMessage = _lastSeenObj ? _lastSeenObj[idx] : undefined
+      // console.log(_lastMessage)
+      if (_lastMessage === undefined) {
+        return [..._acc, game.get("messages")?.[`${idx}`].length || 0]
+      }
+      const unreadMessages = game
+        .get("messages")
+        ?.[`${idx}`].filter(
+          (_message) => _message.timeStamp > _lastMessage.timeStamp
+        )
+
+      // console.log(unreadMessages)
+
+      if (unreadMessages.length > 0) {
+        return [..._acc, unreadMessages.length]
+      }
+
+      return [..._acc, 0]
+    }, [])
+
+    console.log("unread messages", unreadObj)
+    _player.set("hasUnreadMessages", unreadObj)
+  })
+}
+
+function checkForEstimateUpdates(game) {
+  const indexes = game.get("treatment").questions.reduce((acc, _q, index) => {
+    return [...acc, index]
+  }, [])
+
+  const currentEstimates = indexes.reduce((_acc, idx) => {
+    return (
+      {
+        [idx]: game.players.reduce((_subacc, _player) => {
+          return { ..._subacc, [_player.id]: _player.get("estimate") }
+        }, {}),
+      },
+      {}
+    )
+  })
+
+  console.log("---------current estimates object ---------")
+  console.log(currentEstimates)
+
+  game.players.reduce((acc, _player) => {
+    return { ...acc, [_player.id]: _player.get("currentEstimate") }
+  })
+
+  game.players.forEach((_player) => {
+    const _seenEstimates = _player.get("seenEstimates")
+    const estimatesMatch = _seenEstimates.reduce((acc, _player))
+    const gameMessages = game.get("messages")
+    // console.log("game messages", gameMessages)
+    // console.log(_player.get("nickname"), _lastSeenObj)
+    const unreadObj = indexes.reduce((_acc, idx) => {
+      const _lastMessage = _lastSeenObj ? _lastSeenObj[idx] : undefined
+      // console.log(_lastMessage)
+      if (_lastMessage === undefined) {
+        return [..._acc, game.get("messages")?.[`${idx}`].length || 0]
+      }
+      const unreadMessages = game
+        .get("messages")
+        ?.[`${idx}`].filter(
+          (_message) => _message.timeStamp > _lastMessage.timeStamp
+        )
+
+      // console.log(unreadMessages)
+
+      if (unreadMessages.length > 0) {
+        return [..._acc, unreadMessages.length]
+      }
+
+      return [..._acc, 0]
+    }, [])
+
+    console.log("unread messages", unreadObj)
+    _player.set("hasUnreadMessages", unreadObj)
+  })
+}
+
+function checkForUnseenComments(game) {
+  const indexes = game.get("treatment").questions.reduce((acc, _q, index) => {
+    return [...acc, index]
+  }, [])
+
+  const gameComments = game.get("comments")
+
+  // const gameComments = Object.entries(game.get("comments")).map(
+  //   ([key, value]) => {
+  //     return value.length
+  //   }
+  // )
+
+  game.players.forEach((_player) => {
+    const seenComments = _player.get("seenComments")
+    const unseenComments = indexes.reduce((acc, idx) => {
+      if (gameComments[`${idx}`] === undefined) {
+        return [...acc, 0]
+      }
+
+      if (seenComments[`${idx}`] === undefined) {
+        return [...acc, gameComments[`${idx}`].length]
+      }
+
+      return [
+        ...acc,
+        gameComments[`${idx}`].length - seenComments[`${idx}`].length,
+      ]
+    }, [])
+
+    _player.set("unseenComments", unseenComments)
+  })
+}
+
+function checkMedianChange(game) {
+  const indexes = game.get("treatment").questions.reduce((acc, _q, index) => {
+    return [...acc, index]
+  }, [])
+
+  const gameMedians = game.get("gameMedians")
+  console.log("game medians:")
+  Object.entries(gameMedians).forEach(([key, value]) =>
+    console.log(`${key}: ${value}`)
+  )
+
+  game.players.forEach((_player) => {
+    const seenMedians = _player.get("seenMedians")
+    const medianDiff = indexes.reduce((acc, idx) => {
+      if (gameMedians[`${idx}`] === undefined) {
+        return [...acc, false]
+      }
+
+      if (seenMedians[`${idx}`] === undefined) {
+        return [...acc, true]
+      }
+
+      if (seenMedians[`${idx}`] !== gameMedians[`${idx}`]) {
+        return [...acc, true]
+      }
+
+      return [...acc, false]
+    }, [])
+
+    _player.set("medianDifferent", medianDiff)
+  })
+}

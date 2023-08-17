@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react"
-import { usePlayer } from "@empirica/core/player/classic/react"
+import {
+  usePlayer,
+  usePlayers,
+  useGame,
+} from "@empirica/core/player/classic/react"
 import { EditIcon } from "./SvgIcon"
 
 export function CurrentEstimate({ index }) {
   const player = usePlayer()
+  const game = useGame()
+  const players = usePlayers()
+
   const [updating, setUpdating] = useState(false)
   const [estimate, setEstimate] = useState(undefined)
 
@@ -47,6 +54,17 @@ export function CurrentEstimate({ index }) {
     )
   }, [])
 
+  function median(array) {
+    const sorted = array.sort((a, b) => a - b)
+    const middle = Math.floor(sorted.length / 2)
+
+    if (sorted.length % 2 === 0) {
+      return (sorted[middle - 1] + sorted[middle]) / 2
+    }
+
+    return sorted[middle]
+  }
+
   function handleClick(event) {
     console.log(player.get("currentEstimate"))
     if (updating) {
@@ -59,6 +77,21 @@ export function CurrentEstimate({ index }) {
       player.set("currentEstimate", currentEstimateObj)
       setEstimate(undefined)
       setUpdating(!updating)
+
+      let gameMedians = game.get("gameMedians") || {}
+      const answers = players.reduce((accumulator, _player) => {
+        if (_player.get("currentEstimate")?.[`${index}`] !== undefined) {
+          return [
+            ...accumulator,
+            parseInt(_player.get("currentEstimate")[`${index}`]),
+          ]
+        }
+        return accumulator
+      }, [])
+
+      const currentMedian = median(answers)
+      gameMedians[`${index}`] = currentMedian
+      game.set("gameMedians", gameMedians)
 
       return
     }

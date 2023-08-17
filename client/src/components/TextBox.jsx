@@ -79,8 +79,9 @@ export function TextBox({ type, index = null }) {
             {endDate.toLocaleDateString("en-US", {
               month: "long",
             })}{" "}
-            {endDate.getDate()} {endDate.getFullYear()}{" "}
-            {endDate.toLocaleTimeString()}
+            {endDate.getDate()}
+            {", "}
+            {`${endDate.getHours()}:${endDate.getMinutes()}`}
           </p>
         </div>
       </div>

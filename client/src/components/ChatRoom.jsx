@@ -70,10 +70,6 @@ export function ChatRoom({ index }) {
 
   const sortedMessages = messages
 
-  function handleClick() {
-    console.log(game.get("messages"))
-  }
-
   function handleCheck() {
     console.log(players)
     const indexes = game.get("treatment").questions.reduce((acc, _q, index) => {
@@ -86,7 +82,7 @@ export function ChatRoom({ index }) {
       console.log("game messages", gameMessages)
       console.log(_player.get("nickname"), _lastSeenObj)
       const unreadObj = indexes.reduce((_acc, idx) => {
-        const _lastMessage = _lastSeenObj[idx]
+        const _lastMessage = _lastSeenObj ? _lastSeenObj[idx] : undefined
         console.log(_lastMessage)
         if (_lastMessage === undefined) {
           return [..._acc, true]
@@ -110,10 +106,6 @@ export function ChatRoom({ index }) {
     })
   }
 
-  function handleTest() {
-    const testObj = player.get("lastSeenMessages")
-    console.log(testObj[3])
-  }
   return (
     <div className="h-4/5 min-h-100px flex flex-col space-y-2 border rounded shadow bg-gray-100 overflow-auto snap-end">
       {sortedMessages.map((_message, i, arr) => (
@@ -127,25 +119,7 @@ export function ChatRoom({ index }) {
         />
       ))}
       <div ref={messagesEndRef} />
-
-      <button
-        className="border rounded bg-black text-white hover:bg-gray-500"
-        onClick={handleClick}
-      >
-        debug
-      </button>
-      <button
-        className="border rounded bg-black text-white hover:bg-gray-500"
-        onClick={handleTest}
-      >
-        test
-      </button>
-      <button
-        className="border rounded bg-black text-white hover:bg-gray-500"
-        onClick={handleCheck}
-      >
-        check messages
-      </button>
+      <button onClick={(e) => handleCheck()}>check seen messages</button>
     </div>
   )
 }

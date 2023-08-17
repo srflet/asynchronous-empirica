@@ -9,6 +9,48 @@ export function MedianBox({ index }) {
   const players = usePlayers()
   const player = usePlayer()
   const game = useGame()
+  const [answers, setAnswers] = useState([])
+
+  useEffect(() => {
+    if (!game || !players) {
+      return
+    }
+
+    const newAnswers = players.reduce((accumulator, _player) => {
+      if (_player.get("currentEstimate")?.[`${index}`] !== undefined) {
+        return [
+          ...accumulator,
+          parseInt(_player.get("currentEstimate")[`${index}`]),
+        ]
+      }
+      return accumulator
+    }, [])
+
+    setAnswers(newAnswers)
+  })
+
+  useEffect(() => {
+    if (!game || !players) {
+      return
+    }
+
+    let medianObject = player.get("seenMedians") || {}
+
+    const currentMedian = median(answers)
+
+    medianObject[`${index}`] = currentMedian
+
+    player.set("seenMedians", medianObject)
+  }, [answers])
+
+  function handleCheck() {
+    // console.log(players)
+    // const indexes = game.get("treatment").questions.reduce((acc, _q, index) => {
+    //   return [...acc, index]
+    // }, [])
+    // console.log(game.get("gameMedians"))
+    // })
+  }
 
   // const [isLocked, setIsLocked] = useState(true)
 
@@ -71,19 +113,12 @@ export function MedianBox({ index }) {
     return accumulator
   }, [])
   // could be otherAnswers = otherPlayers.reduce
-  const answers = players.reduce((accumulator, _player) => {
-    if (_player.get("currentEstimate")?.[`${index}`] !== undefined) {
-      return [
-        ...accumulator,
-        parseInt(_player.get("currentEstimate")[`${index}`]),
-      ]
-    }
-    return accumulator
-  }, [])
 
   return (
     <div className="h-full p-4 flex flex-col space-y-2 border border-solid rounded shadow">
-      <h1>Median Answer: </h1>
+      <h1 onClick={(e) => handleCheck()}>
+        Average (Median) Community Estimate:{" "}
+      </h1>
       {isLocked ? (
         <div>
           <p>

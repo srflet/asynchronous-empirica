@@ -328,8 +328,6 @@ export function GameSimple() {
 
   return (
     <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <p>{player.get("gameStage")}</p>
-      <p>Game Screen</p>
       <Loading />
     </div>
   )

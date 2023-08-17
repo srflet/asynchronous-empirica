@@ -79,7 +79,7 @@ export function NewPlayer({ onPlayerID, connecting }) {
             Please enter your email
           </h2>
         </div>
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white mt-6 w-500px self-center py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form
             className="space-y-6"
             action="#"
@@ -133,22 +133,13 @@ export function NewPlayer({ onPlayerID, connecting }) {
     <div className="min-h-screen bg-empirica-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md"></div>
       <div className="loader"></div>
-      <p>
+      {/* <p>
         {" "}
         Please see your {isMturk ? "Mturk messages" : "emails"} to find your
         personal link to log in. You may close this tab.
       </p>
-      <button onClick={(e) => console.log(!enterEmail)}>DEBUG</button>
-      <button onClick={(e) => setEnterEmail(true)}>reset email</button>
-      <button
-        onClick={(e) => {
-          const myDecipher = decipher("JBLab")
-          console.log(myDecipher(partKeyId))
-        }}
-      >
-        decode partId
-      </button>
-      <p>{`${baseURL}/?participantKey=${partKeyId}`}</p>
+
+      <p>{`${baseURL}/?participantKey=${partKeyId}`}</p> */}
     </div>
   )
 }
